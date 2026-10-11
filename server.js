@@ -1,88 +1,107 @@
-const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
+const express = require('express');
+const path = require('path');
 
-// আপনার আসল টোকেন এখানে বসানো আছে
-const TOKEN = '8942840244:AAGs9fFyjtYut4gKuydL7Ciq21TGIe0KkIw';
-const bot = new TelegramBot(TOKEN, { polling: true });
+// আপনার টেলিগ্রাম বটের টোকেন এখানে বসানো আছে
+const token = '7990145229:AAFs514jG9G2D6v5_C7Lp7K-w4p5N6x8'; 
+const bot = new TelegramBot(token, { polling: true });
 
 const app = express();
+const PORT = process.env.PORT || 10000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let users = {}; // ইউজার ডাটা সংরক্ষণের জন্য
+// সার্ভারের নিজস্ব ফোল্ডার থেকে ফ্রন্টএন্ড মিনি অ্যাপ সার্ভ করা
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ১. বট স্টার্ট কমান্ড
+// ইন-মেমোরি ইউজার ডেটাবেস (ইউজার আইডি, নাম ও ব্যালেন্স ট্র্যাক করার জন্য)
+const users = {};
+
+// বটের /start কমান্ড হ্যান্ডলার
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    const username = msg.chat.first_name || 'User';
+    const userFirstName = msg.from.first_name || 'User';
+    const username = msg.from.username || 'No Username';
 
+    // ইউজারের ডাটা সেভ বা ইনিশিয়ালাইজ করা
     if (!users[chatId]) {
-        users[chatId] = { username: username, balance: 0, referrals: 0 };
+        users[chatId] = {
+            id: chatId,
+            name: userFirstName,
+            username: username,
+            balance: 0.00
+        };
     }
 
-    bot.sendMessage(chatId, `স্বাগতম ${username}!\n\nআমাদের আর্নিং মিনি অ্যাপে আপনাকে স্বাগতম। নিচে ক্লিক করে আপনার ড্যাশবোর্ড দেখুন:`, {
+    const webAppUrl = `https://${process.env.RENDER_EXTERNAL_URL ? new URL(process.env.RENDER_EXTERNAL_URL).hostname : 'localhost:' + PORT}`;
+
+    const welcomeMessage = `আসসালামু আলাইকুম, ${userFirstName}! 🌟\n\nআমাদের অফিশিয়াল টাচ আর্নিং বিডি প্ল্যাটফর্মে আপনাকে স্বাগতম। নিচে থেকে মিনি অ্যাপ ওপেন করে আপনার কাজ শুরু করুন এবং ব্যালেন্স চেক করুন।`;
+
+    bot.sendMessage(chatId, welcomeMessage, {
         reply_markup: {
             inline_keyboard: [
-                [{ text: '🚀 ওপেন অ্যাপ ও ড্যাশবোর্ড', callback_data: 'open_app' }],
-                [{ text: '👥 আমার রেফারেল', callback_data: 'my_ref' }]
+                [{ text: "🚀 Start Earning (Mini App)", web_app: { url: `https://jalukihokal31-crypto.github.io/my-telegram-bot/` } }], // অথবা Render সার্ভার লিংক ব্যবহার করতে পারেন
+                [{ text: "💰 My Balance", callback_data: "check_balance" }]
             ]
         }
     });
 });
 
-// ইনলাইন বাটন হ্যান্ডলার
+// ব্যালেন্স চেক করার কলব্যাক হ্যান্ডলার
 bot.on('callback_query', (query) => {
     const chatId = query.message.chat.id;
-    if (query.data === 'open_app') {
-        bot.sendMessage(chatId, `আপনার বর্তমান ব্যালেন্স: $${users[chatId]?.balance || 0}`);
-    } else if (query.data === 'my_ref') {
-        // আপনার আসল বটের ইউজারনেম এখানে বসানো আছে
-        const refLink = `https://t.me/touchearningbd_bot?start=${chatId}`;
-        bot.sendMessage(chatId, `আপনার রেফারেল লিংক:\n${refLink}\n\nমোট রেফার: ${users[chatId]?.referrals || 0} জন`);
+    const user = users[chatId] || { balance: 0.00 };
+
+    if (query.data === 'check_balance') {
+        bot.answerCallbackQuery(query.id, {
+            text: `আপনার বর্তমান ব্যালেন্স: ৳${user.balance.toFixed(2)}`,
+            show_alert: true
+        });
     }
 });
 
-// ২. আলাদা সিক্রেট অ্যাডমিন প্যানেল রাউট (ব্রাউজারে ওপেন হবে)
+// অ্যাডমিন প্যানেল রুট (যেকোনো ইউজারের ব্যালেন্স দেখার ও আপডেট করার জন্য)
 app.get('/admin-secret-panel', (req, res) => {
     let userListHtml = '';
     for (let id in users) {
-        userListHtml += `<li>ID: ${id} | Name: ${users[id].username} | Balance: $${users[id].balance}</li>`;
+        userListHtml += `<tr><td>${users[id].id}</td><td>${users[id].name}</td><td>@${users[id].username}</td><td>৳${users[id].balance}</td></tr>`;
     }
 
     res.send(`
-        <html>
-        <head><title>Admin Panel</title></head>
-        <body style="font-family: Arial; padding: 20px; background: #f4f4f4;">
-            <h2>🔐 সিক্রেট অ্যাডমিন প্যানেল</h2>
-            <hr>
-            <h3>ইউজার তালিকা (${Object.keys(users).length} জন):</h3>
-            <ul>${userListHtml}</ul>
-            <hr>
-            <h3>ইউজারের ব্যালেন্স আপডেট করুন:</h3>
-            <form action="/admin/update-balance" method="POST">
-                <input type="text" name="chatId" placeholder="User Chat ID" required style="padding: 8px; margin: 5px;"><br>
-                <input type="number" step="0.01" name="amount" placeholder="Amount (e.g. 5)" required style="padding: 8px; margin: 5px;"><br>
-                <button type="submit" style="padding: 10px 20px; background: green; color: white; border: none;">ব্যালেন্স যোগ করুন</button>
-            </form>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Admin Panel - Touch Earning BD</title>
+            <style>
+                body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; }
+                .container { max-width: 800px; margin: auto; background: #1e293b; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+                h2 { color: #38bdf8; text-align: center; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
+                th { background: #0ea5e9; color: white; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>👑 Secure Admin Control Panel</h2>
+                <p>Registered Users on Bot:</p>
+                <table>
+                    <thead>
+                        <tr><th>User ID</th><th>Name</th><th>Username</th><th>Balance</th></tr>
+                    </thead>
+                    <tbody>
+                        ${userListHtml || '<tr><td colspan="4" style="text-align:center;">No users registered yet.</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
         </body>
         </html>
     `);
 });
 
-// অ্যাডমিন প্যানেল থেকে ব্যালেন্স আপডেট করার প্রসেস
-app.post('/admin/update-balance', (req, res) => {
-    const { chatId, amount } = req.body;
-    if (users[chatId]) {
-        users[chatId].balance += parseFloat(amount);
-        bot.sendMessage(chatId, `আপনার অ্যাকাউন্টে $${amount} যোগ করা হয়েছে! নতুন ব্যালেন্স: $${users[chatId].balance}`);
-        res.send(`<script>alert('সফলভাবে ব্যালেন্স আপডেট হয়েছে!'); window.location.href='/admin-secret-panel';</script>`);
-    } else {
-        res.send(`<script>alert('ইউজার পাওয়া যায়নি!'); window.location.href='/admin-secret-panel';</script>`);
-    }
-});
-
-// সার্ভার চালু করা
-const PORT = process.env.PORT || 3000;
+// সার্ভার স্টার্ট
 app.listen(PORT, () => {
-    console.log(`Bot and Admin Panel running on port ${PORT}`);
+    console.log(`Server is running smoothly on port ${PORT}`);
 });
