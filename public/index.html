@@ -528,29 +528,44 @@
                 state.uid = String(u.id);
                 state.userName = u.first_name || (u.username ? '@' + u.username : "Member");
             }
-            
-            // রিয়েল রেফারেল ট্র্যাকিং (লোকাল স্টোরেজ ও শেয়ার্ড লিস্টের মাধ্যমে)
-            let startParam = tg.initDataUnsafe?.start_param;
-            if (startParam && startParam !== state.uid) {
-                let refKey = 'ref_counted_' + state.uid;
-                if (!localStorage.getItem(refKey)) {
-                    localStorage.setItem(refKey, 'true');
-                    state.bal += 2.00;
-                    state.refInc += 2.00;
-                    state.ref += 1;
-                }
-            }
         }
         
         if (!state.uid) {
             state.uid = "TG_" + Math.floor(10000000 + Math.random() * 90000000);
             state.userName = "Telegram Member";
         }
-        
+
+        // লোকালস্টোরেজ থেকে ইউজারের নিজস্ব সেভ করা ডেটা (ব্যালেন্স ও রেফার) লোড করা
+        let savedData = JSON.parse(localStorage.getItem('user_state_' + state.uid) || '{}');
+        if(savedData.bal !== undefined) state.bal = savedData.bal;
+        if(savedData.ref !== undefined) state.ref = savedData.ref;
+        if(savedData.refInc !== undefined) state.refInc = savedData.refInc;
+        if(savedData.claimedSalaries) state.claimedSalaries = savedData.claimedSalaries;
+        if(savedData.vip) state.vip = savedData.vip;
+
+        // টেলিগ্রাম স্টার্ট প্যারামিটার (start_param) চেক করে রিয়েল রেফারেল কাউন্ট ও বোনাস যোগ করা
+        if (tg) {
+            let startParam = tg.initDataUnsafe?.start_param;
+            if (startParam && startParam !== state.uid) {
+                let referralRecordKey = 'referred_by_' + state.uid;
+                // যদি এই ইউজার এর আগে কাউকে রেফার করে না থাকে
+                if (!localStorage.getItem(referralRecordKey)) {
+                    localStorage.setItem(referralRecordKey, startParam);
+                    
+                    // যার লিংকে জয়েন করেছে (referrer) তার ডেটা আপডেট করা
+                    let referrerData = JSON.parse(localStorage.getItem('user_state_' + startParam) || '{"bal":0, "ref":0, "refInc":0}');
+                    referrerData.ref += 1;
+                    referrerData.refInc += 2.00;
+                    referrerData.bal += 2.00;
+                    localStorage.setItem('user_state_' + startParam, JSON.stringify(referrerData));
+                }
+            }
+        }
+
         document.getElementById('user-name').innerText = state.userName;
         document.getElementById('user-avatar').innerText = state.userName.charAt(0).toUpperCase();
 
-        // গ্লোবাল মেমোরি বা লোকালস্টোরেজ থেকে লিডারবোর্ড লোড করা
+        saveUserState();
         updateGlobalLeaderboard();
 
         let loaded = false;
@@ -567,10 +582,8 @@
                 if(!loaded) {
                     loaded = true;
                     clearTimeout(safetyTimer);
-                    state.bal = parseFloat(res.bal) || 0;
-                    state.pen = parseFloat(res.pen) || 0;
-                    state.app = parseFloat(res.app) || 0;
-                    state.ref = parseInt(res.ref) || 0;
+                    state.bal = parseFloat(res.bal) || state.bal;
+                    state.ref = parseInt(res.ref) || state.ref;
                     state.refInc = state.ref * 2.00;
                     
                     document.getElementById('loading-overlay').style.display = 'none';
@@ -584,7 +597,24 @@
         }
     });
 
+    function saveUserState() {
+        let currentState = {
+            bal: state.bal,
+            ref: state.ref,
+            refInc: state.refInc,
+            claimedSalaries: state.claimedSalaries,
+            vip: state.vip
+        };
+        localStorage.setItem('user_state_' + state.uid, JSON.stringify(currentState));
+    }
+
     function updateAll() {
+        // রিফ্রেশ বা পেজ বদলালেও নিজস্ব লোকাল ডেটা চেক করা
+        let savedData = JSON.parse(localStorage.getItem('user_state_' + state.uid) || '{}');
+        if(savedData.bal !== undefined) state.bal = savedData.bal;
+        if(savedData.ref !== undefined) state.ref = savedData.ref;
+        if(savedData.refInc !== undefined) state.refInc = savedData.refInc;
+
         document.querySelectorAll('.app-balance').forEach(e => e.innerText = '৳ ' + state.bal.toFixed(2));
         document.getElementById('app-pending').innerText = '৳ ' + state.pen.toFixed(2);
         document.getElementById('acc-id').innerText = '#' + state.uid;
@@ -596,9 +626,9 @@
 
         updateGlobalLeaderboard();
         renderSalaryPage();
+        saveUserState();
     }
 
-    // গ্লোবাল লিডারবোর্ড সিস্টেম (লোকালস্টোরেজের মাধ্যমে সব ইউজারের ডেটা সিঙ্ক ও সর্ট করা)
     function updateGlobalLeaderboard() {
         let container = document.getElementById('leaderboard-list');
         if(!container) return;
@@ -614,8 +644,6 @@
         }
 
         localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
-
-        // রেফার অনুযায়ী বড় থেকে ছোট ক্রমানুসারে সাজানো (সবার জন্য ডাইনামিক আপডেট)
         allMembers.sort((a, b) => b.ref - a.ref);
 
         let html = '';
@@ -686,6 +714,7 @@
         if(state.claimedSalaries.includes(tierId)) return;
         state.claimedSalaries.push(tierId);
         state.bal += amount;
+        saveUserState();
         updateAll();
         alert('অভিনন্দন! আপনার মাসিক স্যালারি সফলভাবে ক্লেইম করা হয়েছে।');
     }
@@ -703,6 +732,7 @@
         document.getElementById('page-'+p).classList.add('active');
         if(el) { document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active')); el.classList.add('active'); }
         window.scrollTo(0,0);
+        updateAll();
     }
 
     function selectMethod(el, m) {
@@ -745,6 +775,7 @@
         document.getElementById('ad-overlay').style.display = 'none';
         state.bal += 1.00;
         state.ads.watched += 1;
+        saveUserState();
         updateAll();
         alert('সফলভাবে ১ টাকা বোনাস যোগ হয়েছে!');
     }
@@ -758,6 +789,7 @@
             }
             state.bal += gifts[code];
             state.usedGifts.push(code);
+            saveUserState();
             updateAll();
             alert('অভিনন্দন! সফলভাবে ' + gifts[code] + ' টাকা যোগ হয়েছে।');
         } else {
@@ -777,6 +809,7 @@
             return;
         }
         state.pen += amt;
+        saveUserState();
         updateAll();
         alert('ডিপোজিট রিকোয়েস্ট এবং স্ক্রিনশট সফলভাবে সাবমিট হয়েছে!');
         switchPage('home');
@@ -799,6 +832,7 @@
         }
         state.bal -= amt;
         state.pen += amt;
+        saveUserState();
         updateAll();
         alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
         switchPage('home');
@@ -814,6 +848,7 @@
         state.tasks[type].c += 1;
         state.pen += rate;
         document.getElementById(type === 'gmail' ? 'gmail-sub' : (type === 'fb' ? 'fb-sub' : 'in-sub')).innerText = state.tasks[type].c;
+        saveUserState();
         updateAll();
         alert('সফলভাবে সাবমিট হয়েছে! রিভিউ শেষে ব্যালেন্সে যোগ হবে।');
     }
@@ -826,6 +861,7 @@
         }
         state.bal -= price;
         state.vip = { id, name, tasksCount, rate, days, completed: 0 };
+        saveUserState();
         updateAll();
         alert(name + ' প্যাকেজ সফলভাবে কেনা হয়েছে!');
         switchPage('package-income');
