@@ -10,9 +10,9 @@
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Noto Sans Bengali', sans-serif; }
     body { background-color: #d1dce6; display: flex; justify-content: center; }
-    .app-container { width: 100%; max-width: 400px; background-color: #fcf4f4; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+    .app-container { width: 100%; max-width: 400px; background-color: #fcf4f4; min-height: 100vh; position: relative; padding-bottom: 90px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
     
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #fff; position: sticky; top: 0; z-index: 50; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #fff; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #ffebee; }
     .profile-info { display: flex; align-items: center; gap: 10px; }
     .avatar { width: 40px; height: 40px; background-color: #d32f2f; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 600; font-size: 14px; }
     .account-text p { font-size: 10px; color: #888; font-weight: 600; text-transform: uppercase; line-height:1;}
@@ -20,7 +20,7 @@
     .header-title { color: #e63946; font-weight: 800; font-size: 16px; }
     .header-badge { background: #ffebee; border: 1px solid #ffcdd2; color: #d32f2f; padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: 700; }
 
-    .page { display: none; animation: fadeIn 0.3s; }
+    .page { display: none; animation: fadeIn 0.3s; padding-bottom: 20px; }
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -93,21 +93,18 @@
     .ads-stat-box h4.yellow { color: #facc15; }
     .ads-stat-box h4.green { color: #ef5350; }
     .watch-ad-btn { width: 100%; background: linear-gradient(135deg, #e63946, #b71c1c); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
-    .watch-ad-btn.done { background: #555; cursor: not-allowed; }
 
-    .vip-card { background: white; border: 1px solid #ffebee; border-radius: 15px; padding: 20px; }
+    .vip-card { background: white; border: 1px solid #ffebee; border-radius: 15px; padding: 20px; margin-bottom: 15px; }
     .vc-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ffebee; padding-bottom: 15px; margin-bottom: 15px; }
     .vc-title { display: flex; align-items: center; gap: 10px; }
     .vc-icon { width: 35px; height: 35px; background: #ffebee; color: #d32f2f; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 16px; }
     .vc-name h3 { font-size: 16px; font-weight: 700; color: #222; }
     .vc-badge { background: #f8fafc; border: 1px solid #ffebee; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: 600; color: #555; }
-    .vc-badge.active { background: #eaf6f1; border-color: #cbf0e1; color: #0b8e69; }
     .vc-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
     .vs-box { background: #fafcfb; border: 1px solid #ffebee; border-radius: 10px; padding: 10px 5px; text-align: center; }
     .vs-box span { font-size: 9px; color: #888; font-weight: 600; display: block; margin-bottom: 4px; }
     .vs-box h4 { font-size: 13px; font-weight: 700; color: #d32f2f; }
     .buy-pkg-btn { width: 100%; background: #d32f2f; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-    .buy-pkg-btn.active { background: #0b8e69; }
 
     .empty-pkg-card { background: white; margin: 0 20px 20px 20px; border-radius: 20px; padding: 40px 20px; text-align: center; border: 1px solid #ffebee; }
     .lock-icon-container { width: 60px; height: 60px; background: #fff5eb; border-radius: 15px; display: flex; justify-content: center; align-items: center; color: #f59e0b; font-size: 28px; margin: 0 auto 20px auto; }
@@ -115,20 +112,13 @@
     .empty-desc { font-size: 11px; color: #888; font-weight: 500; margin-bottom: 25px; line-height: 1.6; }
     
     .active-pkg-header { background: #d32f2f; color: white; padding: 20px; border-radius: 15px; margin: 0 20px 20px; text-align: center; }
-    .pkg-ad-card { background: white; border: 1px solid #ffebee; border-radius: 12px; padding: 15px; margin: 0 20px 10px; display: flex; justify-content: space-between; align-items: center; }
-    .pkg-ad-btn { background: #d32f2f; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .pkg-ad-btn.done { background: #e0e0e0; color: #888; cursor: not-allowed; }
-
+    
     .target-card { background: white; border-radius: 15px; padding: 20px; border: 1px solid #ffebee; margin-bottom: 15px; }
     .t-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .t-card-title { font-size: 14px; font-weight: 700; color: #222; }
     .t-card-amount { font-size: 16px; font-weight: 800; color: #d32f2f; }
-    .t-progress-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: #555; margin-bottom: 6px; }
-    .t-progress-bar { width: 100%; height: 6px; background: #ffebee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
-    .t-progress-fill { height: 100%; background: #d32f2f; border-radius: 10px; transition: 0.4s; }
     .btn-claim-locked { width: 100%; background: #f4f8fb; color: #a1b0be; border: 1px solid #eef6f2; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: not-allowed; display: flex; justify-content: center; gap: 8px; }
-    .btn-claim-unlocked { width: 100%; background: #0b8e69; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; gap: 8px; box-shadow: 0 4px 10px rgba(11, 142, 105, 0.2); }
-    .btn-claim-done { width: 100%; background: #e0e0e0; color: #888; border: none; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: not-allowed; }
+    .btn-claim-unlocked { width: 100%; background: #0b8e69; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; gap: 8px; }
 
     .wallet-main-card { background: #d32f2f; margin: 0 20px 20px 20px; border-radius: 15px; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
     .vm-balance h4 { font-size: 11px; font-weight: 500; margin-bottom: 5px; }
@@ -151,19 +141,16 @@
     .top-member-card { background: linear-gradient(135deg, #f59e0b, #d97706); margin: 0 20px 20px 20px; border-radius: 15px; padding: 25px 20px; color: white; text-align: center; }
     .refer-banner { background: #d32f2f; margin: 0 20px 20px 20px; border-radius: 15px; padding: 25px 20px; color: white; text-align: center; }
 
-    .history-item { background: white; border: 1px solid #ffebee; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .h-status { font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 15px; }
-    .h-status.pending { background: #fff8e1; color: #f39c12; }
+    #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 25px; }
+    .ad-banner-box { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 20px; width: 100%; max-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px; text-align: center; cursor: pointer; }
+    .timer-circle { width: 70px; height: 70px; border: 4px solid #38bdf8; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; font-weight: bold; color: #38bdf8; margin: 0 auto 15px auto; background: rgba(56, 189, 248, 0.1); }
+    .ad-action-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); display: none; }
     
-    #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; }
-    .timer-circle { width: 80px; height: 80px; border: 5px solid #e63946; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: white; margin-bottom: 20px; }
-    .ad-action-btn { display: none; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px 24px; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); width: 100%; max-width: 280px; }
-    
-    .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100; }
+    .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 1000; }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #999; cursor: pointer; }
     .nav-item.active { color: #d32f2f; }
 
-    #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+    #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:999999; display:flex; flex-direction:column; justify-content:center; align-items:center; }
     .spinner { border: 4px solid #ffebee; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom:15px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
@@ -176,12 +163,13 @@
 </div>
 
 <div id="ad-overlay">
-    <h3 style="margin-bottom: 10px;">বিজ্ঞাপন টাস্ক চলছে...</h3>
-    <div class="timer-circle" id="ad-timer">15</div>
-    <p id="ad-status-text" style="font-size: 13px; color: #94a3b8;">দয়া করে টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন...</p>
-    
-    <!-- টাইমার শেষে এই বাটনটি আসবে এবং ইউজার নিজে ক্লিক করলে স্মার্ট লিংকে নিয়ে যাবে -->
-    <button id="ad-visit-btn" class="ad-action-btn" onclick="openSmartLinkAndReward()">🔗 বিজ্ঞাপন দেখতে এখানে ক্লিক করুন</button>
+    <div class="ad-banner-box" onclick="openSmartLinkAndReward()">
+        <h4 style="color: #f8fafc; font-size: 16px; margin-bottom: 5px;">🔥 স্পেশাল প্রমোশন অফার</h4>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">রিওয়ার্ড পেতে নিচের ব্যানার বা বাটনে ক্লিক করুন</p>
+        <div class="timer-circle" id="ad-timer">15</div>
+        <p id="ad-status-text" style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px;">টাইমার শেষ হওয়ার পর ক্লেইম করুন</p>
+        <button id="ad-visit-btn" class="ad-action-btn">🎁 ক্লেইম করুন ও রিওয়ার্ড নিন</button>
+    </div>
 </div>
 
 <div class="app-container">
@@ -195,6 +183,7 @@
         <div class="header-badge app-balance">৳ 0.00</div>
     </div>
 
+    <!-- HOME PAGE -->
     <div id="page-home" class="page active">
         <div class="balance-card">
             <div class="balance-top"><span><i class="fas fa-wallet"></i> TOTAL MAIN BALANCE</span></div>
@@ -234,6 +223,7 @@
         </div>
     </div>
 
+    <!-- DEPOSIT PAGE WITH FILE/SCREENSHOT UPLOAD -->
     <div id="page-deposit" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>অ্যাড ফান্ড / ডিপোজিট</h4></div></div>
         <div class="wallet-main-card">
@@ -254,10 +244,16 @@
             <div class="form-group"><label>পরিমাণ (টাকা)</label><input type="number" id="dep-amt" class="form-control" placeholder="৳ 100"></div>
             <div class="form-group"><label>সেন্ডার নাম্বার</label><input type="text" class="form-control" placeholder="01XXXXXXXXX"></div>
             <div class="form-group"><label>TrxID</label><input type="text" class="form-control" placeholder="TrxID"></div>
+            <!-- গ্যালারি থেকে স্ক্রিনশট আপলোড করার ফাইল ইনপুট অপশন -->
+            <div class="form-group">
+                <label>পেমেন্ট স্ক্রিনশট (গ্যালারি থেকে ছবি দিন)</label>
+                <input type="file" id="dep-screenshot" class="form-control" accept="image/*" style="padding: 8px;">
+            </div>
             <button class="submit-btn" onclick="submitDeposit()">ডিপোজিট রিকোয়েস্ট পাঠান</button>
         </div>
     </div>
 
+    <!-- WALLET PAGE -->
     <div id="page-wallet" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ক্যাশ আউট / উইথড্র</h4></div></div>
         <div class="wallet-main-card">
@@ -290,6 +286,7 @@
         <div id="w-history-list" style="padding:0 20px 40px;"></div>
     </div>
 
+    <!-- GMAIL PAGE -->
     <div id="page-gmail" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>জিমেইল একাউন্ট বিক্রি</h4></div></div>
         <div class="info-card">
@@ -312,6 +309,7 @@
         </div>
     </div>
 
+    <!-- FACEBOOK PAGE -->
     <div id="page-facebook" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ফেসবুক একাউন্ট বিক্রি</h4></div></div>
         <div class="info-card">
@@ -331,6 +329,7 @@
         </div>
     </div>
 
+    <!-- INSTAGRAM PAGE -->
     <div id="page-instagram" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইনস্টাগ্রাম একাউন্ট বিক্রি</h4></div></div>
         <div class="info-card">
@@ -350,6 +349,7 @@
         </div>
     </div>
 
+    <!-- WATCH ADS PAGE -->
     <div id="page-watch-ads" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>এড দেখে আয়</h4></div></div>
         <div class="ads-card">
@@ -365,46 +365,40 @@
         </div>
     </div>
 
+    <!-- TARGET BONUS PAGE -->
     <div id="page-target-bonus" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>টার্গেট বোনাস</h4></div></div>
         <div style="padding:20px;">
             <div class="target-card">
                 <div class="t-card-header"><div class="t-card-title">১০০ রেফার টার্গেট</div><div class="t-card-amount">৳১০০০</div></div>
-                <div class="t-progress-info"><span>অগ্রগতি</span><span id="prog-txt-1">0/100</span></div>
-                <div class="t-progress-bar"><div class="t-progress-fill" id="prog-bar-1" style="width:0%"></div></div>
-                <button id="btn-t1" class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
+                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ১০০টি</div>
+                <button class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
             </div>
             <div class="target-card">
                 <div class="t-card-header"><div class="t-card-title">২০০ রেফার টার্গেট</div><div class="t-card-amount">৳১৫০০</div></div>
-                <div class="t-progress-info"><span>অগ্রগতি</span><span id="prog-txt-2">0/200</span></div>
-                <div class="t-progress-bar"><div class="t-progress-fill" id="prog-bar-2" style="width:0%"></div></div>
-                <button id="btn-t2" class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
-            </div>
-            <div class="target-card">
-                <div class="t-card-header"><div class="t-card-title">৩০০ রেফার টার্গেট</div><div class="t-card-amount">৳২০০০</div></div>
-                <div class="t-progress-info"><span>অগ্রগতি</span><span id="prog-txt-3">0/300</span></div>
-                <div class="t-progress-bar"><div class="t-progress-fill" id="prog-bar-3" style="width:0%"></div></div>
-                <button id="btn-t3" class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
+                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ২০০টি</div>
+                <button class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
             </div>
         </div>
     </div>
 
+    <!-- TOP MEMBER LEADERBOARD PAGE (AUTOMATED) -->
     <div id="page-top-member" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>টপ মেম্বার লিস্ট</h4></div></div>
         <div class="top-member-card">
             <p style="font-size:12px; color:#ffeb3b">সাপ্তাহিক প্রতিযোগিতা</p><h3 style="font-size:18px;">লিডারবোর্ড চ্যাম্পিয়ন</h3>
         </div>
-        <div id="top-member-list" style="padding:20px; text-align:center; color:#888;">
-            <i class="fas fa-users-slash" style="font-size:40px; margin-bottom:15px; color:#ddd;"></i>
-            <p>এখনো কোনো মেম্বার জয়েন করেনি বা লিস্টে নেই।</p>
+        <div style="padding:0 20px;">
+            <div class="section-title" style="padding:0 0 10px 0;"><i class="fas fa-trophy"></i> রিয়েল-টাইম লিডারবোর্ড</div>
+            <div id="leaderboard-list">
+                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে (অটোমেটিক রেফার অনুযায়ী সর্ট হবে) -->
+            </div>
         </div>
     </div>
 
+    <!-- REFER FRIENDS PAGE -->
     <div id="page-refer-friends" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>রেফার ও আয় করুন</h4></div></div>
-        <div style="text-align:center; margin-top:10px;">
-            <button onclick="demoAddReferral()" style="background:#164e63; color:white; border:none; padding:8px 15px; border-radius:8px; font-size:12px; cursor:pointer;"><i class="fas fa-plus"></i> ডেমো রেফার যোগ করুন</button>
-        </div>
         <div class="refer-banner">
             <h3 style="margin-bottom:10px;">প্রতি রেফারে নিশ্চিত ক্যাশ</h3>
             <span style="background:#b71c1c; padding:5px 15px; border-radius:15px; font-size:12px;">৳2 ইনস্ট্যান্ট বোনাস</span>
@@ -430,6 +424,7 @@
         </div>
     </div>
 
+    <!-- GIFT CLAIM PAGE -->
     <div id="page-gift-claim" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>গিফট কোড রিডিম</h4></div></div>
         <div class="form-area">
@@ -439,22 +434,46 @@
         </div>
     </div>
 
+    <!-- VIP PACKAGES PAGE -->
     <div id="page-vip-packages" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ভিআইপি প্যাকেজ</h4></div></div>
         <div style="padding:20px;">
             <div class="vip-card">
-                <div class="vc-header"><div class="vc-title"><div class="vc-icon"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-1</h3></div></div><div class="vc-badge" id="v-badge-1">রেগুলার</div></div>
+                <div class="vc-header"><div class="vc-title"><div class="vc-icon"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-1</h3></div></div><div class="vc-badge">রেগুলার</div></div>
                 <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳200</div>
                 <div class="vc-stats-grid">
                     <div class="vs-box"><span>কাজ</span><h4>2 টি</h4></div>
                     <div class="vs-box"><span>রেট</span><h4>৳15</h4></div>
                     <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
                 </div>
-                <button class="buy-pkg-btn" id="v-btn-1" onclick="purchaseVip(1, 200, 'VIP-1', 2, 15, 30)">প্যাকেজ কিনুন</button>
+                <button class="buy-pkg-btn" onclick="purchaseVip(1, 200, 'VIP-1', 2, 15, 30)">প্যাকেজ কিনুন</button>
+            </div>
+
+            <div class="vip-card">
+                <div class="vc-header"><div class="vc-title"><div class="vc-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-2</h3></div></div><div class="vc-badge">পপুলার</div></div>
+                <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳500</div>
+                <div class="vc-stats-grid">
+                    <div class="vs-box"><span>কাজ</span><h4>4 টি</h4></div>
+                    <div class="vs-box"><span>রেট</span><h4>৳20</h4></div>
+                    <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
+                </div>
+                <button class="buy-pkg-btn" onclick="purchaseVip(2, 500, 'VIP-2', 4, 20, 30)">প্যাকেজ কিনুন</button>
+            </div>
+
+            <div class="vip-card">
+                <div class="vc-header"><div class="vc-title"><div class="vc-icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-3</h3></div></div><div class="vc-badge">গোল্ডেন</div></div>
+                <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳1000</div>
+                <div class="vc-stats-grid">
+                    <div class="vs-box"><span>কাজ</span><h4>8 টি</h4></div>
+                    <div class="vs-box"><span>রেট</span><h4>৳25</h4></div>
+                    <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
+                </div>
+                <button class="buy-pkg-btn" onclick="purchaseVip(3, 1000, 'VIP-3', 8, 25, 30)">প্যাকেজ কিনুন</button>
             </div>
         </div>
     </div>
 
+    <!-- PACKAGE INCOME PAGE -->
     <div id="page-package-income" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>প্যাকেজ ইনকাম</h4></div></div>
         <div id="pkg-empty" class="empty-pkg-card">
@@ -472,16 +491,15 @@
         </div>
     </div>
 
+    <!-- MONTHLY SALARY PAGE -->
     <div id="page-monthly-salary" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>মান্থলি স্যালারি</h4></div></div>
-        <div style="padding:20px;">
-            <div class="target-card">
-                <div class="t-card-header"><div class="t-card-title">বেসিক স্যালারি</div><div class="t-card-amount">৳৫০</div></div>
-                <button id="s-btn-1" class="btn-claim-locked"><i class="fas fa-lock"></i> শর্ত পূরণ হয়নি</button>
-            </div>
+        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>মাসিক স্যালারি</h4></div></div>
+        <div style="padding:20px;" id="salary-container">
+            <!-- মাসিক স্যালারি টার্গেট ডাইনামিক রেন্ডার হবে -->
         </div>
     </div>
 
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-home" onclick="switchPage('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
         <div class="nav-item" id="nav-wallet" onclick="switchPage('wallet', this)"><i class="fas fa-wallet"></i><span>Wallet</span></div>
@@ -495,11 +513,18 @@
         bal: 0, pen: 0, app: 0, ref: 0, refInc: 0, uid: '', userName: '',
         tasks: { gmail: {c:0, h:[]}, fb: {c:0, h:[]}, insta: {c:0, h:[]} },
         wHist: [], vip: null,
-        claimed: { t1:false, t2:false, t3:false, s1:false },
+        claimedSalaries: [],
         usedGifts: [], wMethod: 'bKash', ads: { watched: 0, limit: 20 }
     };
 
     const gifts = { 'GROW2026': 10, 'BONUS50': 50 };
+
+    // রিয়েল-টাইম লিডারবোর্ড মেম্বার লিস্ট
+    let leaderboardMembers = [
+        { name: "Telegram Member", ref: 0 },
+        { name: "Rahim Ahmed", ref: 3 },
+        { name: "Karim Uddin", ref: 1 }
+    ];
 
     document.addEventListener("DOMContentLoaded", () => {
         let tg = window.Telegram?.WebApp;
@@ -511,6 +536,17 @@
                 state.uid = String(u.id);
                 state.userName = u.first_name || (u.username ? '@' + u.username : "Member");
             }
+            
+            let startParam = tg.initDataUnsafe?.start_param;
+            if (startParam && startParam !== state.uid) {
+                let referredKey = 'ref_counted_' + state.uid;
+                if (!localStorage.getItem(referredKey)) {
+                    localStorage.setItem(referredKey, 'true');
+                    state.bal += 2.00;
+                    state.refInc += 2.00;
+                    state.ref += 1;
+                }
+            }
         }
         
         if (!state.uid) {
@@ -521,12 +557,18 @@
         document.getElementById('user-name').innerText = state.userName;
         document.getElementById('user-avatar').innerText = state.userName.charAt(0).toUpperCase();
 
+        if(!leaderboardMembers.some(m => m.name === state.userName)) {
+            leaderboardMembers.push({ name: state.userName, ref: state.ref });
+        }
+
         let loaded = false;
         let safetyTimer = setTimeout(() => {
             if(!loaded) {
                 loaded = true;
                 document.getElementById('loading-overlay').style.display = 'none';
                 updateAll();
+                renderSalaryPage();
+                renderLeaderboard();
             }
         }, 1500);
 
@@ -539,15 +581,20 @@
                     state.pen = parseFloat(res.pen) || 0;
                     state.app = parseFloat(res.app) || 0;
                     state.ref = parseInt(res.ref) || 0;
+                    state.refInc = state.ref * 2.00;
                     
                     document.getElementById('loading-overlay').style.display = 'none';
                     updateAll();
+                    renderSalaryPage();
+                    renderLeaderboard();
                 }
             }).getUserData(state.uid, state.userName);
         } else {
             clearTimeout(safetyTimer);
             document.getElementById('loading-overlay').style.display = 'none';
             updateAll();
+            renderSalaryPage();
+            renderLeaderboard();
         }
     });
 
@@ -560,9 +607,93 @@
         document.getElementById('ref-pg-count').innerText = state.ref;
         document.getElementById('ref-pg-earn').innerText = '৳ ' + state.refInc.toFixed(2);
         document.getElementById('ad-watched-count').innerText = state.ads.watched + ' / ' + state.ads.limit;
+
+        let cur = leaderboardMembers.find(m => m.name === state.userName);
+        if(cur) cur.ref = state.ref;
+
+        renderSalaryPage();
+        renderLeaderboard();
     }
 
-    function demoAddReferral() { state.ref += 1; state.refInc += 2; state.bal += 2; updateAll(); alert('১টি ডেমো রেফার যোগ হয়েছে।'); }
+    // স্বয়ংক্রিয় লিডারবোর্ড রেন্ডার (বেশি রেফার ওয়ালা উপরে, কম বা ০ ওয়ালা নিচে)
+    function renderLeaderboard() {
+        let container = document.getElementById('leaderboard-list');
+        if(!container) return;
+
+        leaderboardMembers.sort((a, b) => b.ref - a.ref);
+
+        let html = '';
+        leaderboardMembers.forEach((m, index) => {
+            let rankBg = index === 0 ? '#f59e0b' : (index === 1 ? '#94a3b8' : (index === 2 ? '#b45309' : '#e2e8f0'));
+            let textColor = index < 3 ? 'white' : '#333';
+            
+            html += `
+                <div style="background:white; border:1px solid #ffebee; border-radius:12px; padding:12px 15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:30px; height:30px; background:${rankBg}; color:${textColor}; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:12px;">#${index + 1}</div>
+                        <div>
+                            <h4 style="font-size:13px; font-weight:700; color:#222;">${m.name}</h4>
+                            <p style="font-size:10px; color:#666;">টেলিগ্রাম মেম্বার</p>
+                        </div>
+                    </div>
+                    <div style="font-size:14px; font-weight:800; color:#d32f2f;">${m.ref} টি রেফার</div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function renderSalaryPage() {
+        let container = document.getElementById('salary-container');
+        if(!container) return;
+
+        let hasVip = state.vip !== null;
+        let currentRefs = state.ref;
+
+        let tiers = [
+            { id: 1, reqRef: 5, reward: 50, title: '৫ রেফার স্যালারি (৳৫০)' },
+            { id: 2, reqRef: 10, reward: 120, title: '১০ রেফার স্যালারি (৳১২০)' },
+            { id: 3, reqRef: 15, reward: 170, title: '১৫ রেফার স্যালারি (৳১৭০)' },
+            { id: 4, reqRef: 20, reward: 250, title: '২০ রেফার স্যালারি (৳২৫০)' },
+            { id: 5, reqRef: 30, reward: 500, title: '৩০ রেফার স্যালারি (৳৫০০)' }
+        ];
+
+        let html = '';
+        tiers.forEach(t => {
+            let isUnlocked = hasVip && (currentRefs >= t.reqRef);
+            let isClaimed = state.claimedSalaries.includes(t.id);
+
+            let btnHtml = '';
+            if(isClaimed) {
+                btnHtml = `<button class="btn-claim-locked" style="background:#e0e0e0; color:#888;"><i class="fas fa-check"></i> ইতিমধ্যে ক্লেইম করা হয়েছে</button>`;
+            } else if(isUnlocked) {
+                btnHtml = `<button class="btn-claim-unlocked" onclick="claimSalary(${t.id}, ${t.reward})"><i class="fas fa-gift"></i> স্যালারি ক্লেইম করুন</button>`;
+            } else {
+                let reason = !hasVip ? 'শর্ত: ১টি ভিআইপি প্যাকেজ কিনতে হবে!' : `শর্ত: আরও ${t.reqRef - currentRefs}টি রেফার প্রয়োজন!`;
+                btnHtml = `<button class="btn-claim-locked"><i class="fas fa-lock"></i> ${reason}</button>`;
+            }
+
+            html += `
+                <div class="target-card">
+                    <div class="t-card-header"><div class="t-card-title">${t.title}</div><div class="t-card-amount">৳${t.reward}</div></div>
+                    <div style="font-size:11px; color:#666; margin-bottom:8px; line-height:1.5;">শর্ত: ${t.reqRef}টি রেফার এবং ১টি ভিআইপি প্যাকেজ সক্রিয় থাকতে হবে। (বর্তমান রেফার: ${currentRefs})</div>
+                    ${btnHtml}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function claimSalary(tierId, amount) {
+        if(state.claimedSalaries.includes(tierId)) return;
+        state.claimedSalaries.push(tierId);
+        state.bal += amount;
+        updateAll();
+        alert('অভিনন্দন! আপনার মাসিক স্যালারি সফলভাবে ক্লেইম করা হয়েছে।');
+    }
+
     function shareTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent("Touch Earning BD তে আয় করুন!\nলিংক: " + document.getElementById('ref-link').value)}`, '_blank'); }
     function shareOther() { if (navigator.share) navigator.share({ title: 'Touch Earning BD', url: document.getElementById('ref-link').value }).catch(console.error); else alert('লিংক কপি করুন।'); }
     
@@ -584,7 +715,6 @@
         state.wMethod = m;
     }
 
-    // নতুন এবং নিরাপদ অ্যাড টাস্ক সিস্টেম (টাইমার শেষ হলে ক্লিক বাটন আসবে)
     function triggerRegularAd() {
         if(state.ads.watched >= state.ads.limit) {
             document.getElementById('ad-limit-msg').style.display = 'block';
@@ -597,34 +727,26 @@
         let visitBtn = document.getElementById('ad-visit-btn');
 
         overlay.style.display = 'flex';
-        visitBtn.style.display = 'none'; // প্রথমে বাটন লুকিয়ে থাকবে
+        visitBtn.style.display = 'none';
         statusText.innerText = "দয়া করে টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন...";
         
-        let timeLeft = 15; // ১৫ সেকেন্ডের টাইমার
+        let timeLeft = 15;
         timerCircle.innerText = timeLeft;
-        timerCircle.style.display = 'flex';
 
         let countdown = setInterval(() => {
             timeLeft--;
             timerCircle.innerText = timeLeft;
             if(timeLeft <= 0) {
                 clearInterval(countdown);
-                timerCircle.style.display = 'none';
-                statusText.innerText = "টাইমার শেষ! নিচের বাটনে ক্লিক করে বিজ্ঞাপন ভিজিট করুন:";
-                visitBtn.style.display = 'block'; // টাইমার শেষ হলে বাটন শো করবে
+                statusText.innerText = "টাইমার শেষ! নিচের বাটনে বা ব্যানারে ক্লিক করে রিওয়ার্ড নিন:";
+                visitBtn.style.display = 'block';
             }
         }, 1000);
     }
 
-    // ইউজার যখন নিজে লিংকে ক্লিক করবে তখন কাজ করবে
     function openSmartLinkAndReward() {
-        // নতুন ট্যাবে অ্যাডস্টার্কা স্মার্ট লিংক ওপেন হবে
         window.open(AD_SMART_LINK, '_blank');
-
-        // ওভারলে বন্ধ করা
         document.getElementById('ad-overlay').style.display = 'none';
-
-        // ব্যালেন্স ও অ্যাড কাউন্ট আপডেট
         state.bal += 1.00;
         state.ads.watched += 1;
         updateAll();
@@ -649,13 +771,18 @@
 
     function submitDeposit() {
         let amt = parseFloat(document.getElementById('dep-amt').value);
+        let fileInput = document.getElementById('dep-screenshot');
         if(isNaN(amt) || amt < 100) {
             alert('সর্বনিম্ন ডিপোজিট ১০০ টাকা!');
             return;
         }
+        if(fileInput.files.length === 0) {
+            alert('দয়া করে পেমেন্টের স্ক্রিনশট বা ছবি সিলেক্ট করুন!');
+            return;
+        }
         state.pen += amt;
         updateAll();
-        alert('ডিপোজিট রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে!');
+        alert('ডিপোজিট রিকোয়েস্ট এবং স্ক্রিনশট সফলভাবে সাবমিট হয়েছে!');
         switchPage('home');
     }
 
@@ -697,7 +824,8 @@
 
     function purchaseVip(id, price, name, tasksCount, rate, days) {
         if(state.bal < price) {
-            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই!');
+            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই! দয়া করে আগে ডিপোজিট করুন।');
+            switchPage('deposit');
             return;
         }
         state.bal -= price;
