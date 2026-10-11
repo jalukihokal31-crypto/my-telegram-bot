@@ -223,7 +223,7 @@
         </div>
     </div>
 
-    <!-- DEPOSIT PAGE WITH FILE/SCREENSHOT UPLOAD -->
+    <!-- DEPOSIT PAGE -->
     <div id="page-deposit" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>অ্যাড ফান্ড / ডিপোজিট</h4></div></div>
         <div class="wallet-main-card">
@@ -244,10 +244,9 @@
             <div class="form-group"><label>পরিমাণ (টাকা)</label><input type="number" id="dep-amt" class="form-control" placeholder="৳ 100"></div>
             <div class="form-group"><label>সেন্ডার নাম্বার</label><input type="text" class="form-control" placeholder="01XXXXXXXXX"></div>
             <div class="form-group"><label>TrxID</label><input type="text" class="form-control" placeholder="TrxID"></div>
-            <!-- গ্যালারি থেকে স্ক্রিনশট আপলোড করার ফাইল ইনপুট অপশন -->
             <div class="form-group">
-                <label>পেমেন্ট স্ক্রিনশট (গ্যালারি থেকে ছবি দিন)</label>
-                <input type="file" id="dep-screenshot" class="form-control" accept="image/*" style="padding: 8px;">
+                <label>পেমেন্ট স্ক্রিনশট (গ্যালারি থেকে সিলেক্ট করুন)</label>
+                <input type="file" id="dep-file" class="form-control" accept="image/*" style="padding: 8px;">
             </div>
             <button class="submit-btn" onclick="submitDeposit()">ডিপোজিট রিকোয়েস্ট পাঠান</button>
         </div>
@@ -382,7 +381,7 @@
         </div>
     </div>
 
-    <!-- TOP MEMBER LEADERBOARD PAGE (AUTOMATED) -->
+    <!-- TOP MEMBER LEADERBOARD PAGE -->
     <div id="page-top-member" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>টপ মেম্বার লিস্ট</h4></div></div>
         <div class="top-member-card">
@@ -391,7 +390,7 @@
         <div style="padding:0 20px;">
             <div class="section-title" style="padding:0 0 10px 0;"><i class="fas fa-trophy"></i> রিয়েল-টাইম লিডারবোর্ড</div>
             <div id="leaderboard-list">
-                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে (অটোমেটিক রেফার অনুযায়ী সর্ট হবে) -->
+                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে -->
             </div>
         </div>
     </div>
@@ -519,13 +518,6 @@
 
     const gifts = { 'GROW2026': 10, 'BONUS50': 50 };
 
-    // রিয়েল-টাইম লিডারবোর্ড মেম্বার লিস্ট
-    let leaderboardMembers = [
-        { name: "Telegram Member", ref: 0 },
-        { name: "Rahim Ahmed", ref: 3 },
-        { name: "Karim Uddin", ref: 1 }
-    ];
-
     document.addEventListener("DOMContentLoaded", () => {
         let tg = window.Telegram?.WebApp;
         
@@ -537,11 +529,12 @@
                 state.userName = u.first_name || (u.username ? '@' + u.username : "Member");
             }
             
+            // রিয়েল রেফারেল ট্র্যাকিং (লোকাল স্টোরেজ ও শেয়ার্ড লিস্টের মাধ্যমে)
             let startParam = tg.initDataUnsafe?.start_param;
             if (startParam && startParam !== state.uid) {
-                let referredKey = 'ref_counted_' + state.uid;
-                if (!localStorage.getItem(referredKey)) {
-                    localStorage.setItem(referredKey, 'true');
+                let refKey = 'ref_counted_' + state.uid;
+                if (!localStorage.getItem(refKey)) {
+                    localStorage.setItem(refKey, 'true');
                     state.bal += 2.00;
                     state.refInc += 2.00;
                     state.ref += 1;
@@ -557,9 +550,8 @@
         document.getElementById('user-name').innerText = state.userName;
         document.getElementById('user-avatar').innerText = state.userName.charAt(0).toUpperCase();
 
-        if(!leaderboardMembers.some(m => m.name === state.userName)) {
-            leaderboardMembers.push({ name: state.userName, ref: state.ref });
-        }
+        // গ্লোবাল মেমোরি বা লোকালস্টোরেজ থেকে লিডারবোর্ড লোড করা
+        updateGlobalLeaderboard();
 
         let loaded = false;
         let safetyTimer = setTimeout(() => {
@@ -567,8 +559,6 @@
                 loaded = true;
                 document.getElementById('loading-overlay').style.display = 'none';
                 updateAll();
-                renderSalaryPage();
-                renderLeaderboard();
             }
         }, 1500);
 
@@ -585,16 +575,12 @@
                     
                     document.getElementById('loading-overlay').style.display = 'none';
                     updateAll();
-                    renderSalaryPage();
-                    renderLeaderboard();
                 }
             }).getUserData(state.uid, state.userName);
         } else {
             clearTimeout(safetyTimer);
             document.getElementById('loading-overlay').style.display = 'none';
             updateAll();
-            renderSalaryPage();
-            renderLeaderboard();
         }
     });
 
@@ -608,22 +594,32 @@
         document.getElementById('ref-pg-earn').innerText = '৳ ' + state.refInc.toFixed(2);
         document.getElementById('ad-watched-count').innerText = state.ads.watched + ' / ' + state.ads.limit;
 
-        let cur = leaderboardMembers.find(m => m.name === state.userName);
-        if(cur) cur.ref = state.ref;
-
+        updateGlobalLeaderboard();
         renderSalaryPage();
-        renderLeaderboard();
     }
 
-    // স্বয়ংক্রিয় লিডারবোর্ড রেন্ডার (বেশি রেফার ওয়ালা উপরে, কম বা ০ ওয়ালা নিচে)
-    function renderLeaderboard() {
+    // গ্লোবাল লিডারবোর্ড সিস্টেম (লোকালস্টোরেজের মাধ্যমে সব ইউজারের ডেটা সিঙ্ক ও সর্ট করা)
+    function updateGlobalLeaderboard() {
         let container = document.getElementById('leaderboard-list');
         if(!container) return;
 
-        leaderboardMembers.sort((a, b) => b.ref - a.ref);
+        let allMembers = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
+        
+        let existingIndex = allMembers.findIndex(m => m.uid === state.uid);
+        if(existingIndex !== -1) {
+            allMembers[existingIndex].ref = state.ref;
+            allMembers[existingIndex].name = state.userName;
+        } else {
+            allMembers.push({ uid: state.uid, name: state.userName, ref: state.ref });
+        }
+
+        localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
+
+        // রেফার অনুযায়ী বড় থেকে ছোট ক্রমানুসারে সাজানো (সবার জন্য ডাইনামিক আপডেট)
+        allMembers.sort((a, b) => b.ref - a.ref);
 
         let html = '';
-        leaderboardMembers.forEach((m, index) => {
+        allMembers.forEach((m, index) => {
             let rankBg = index === 0 ? '#f59e0b' : (index === 1 ? '#94a3b8' : (index === 2 ? '#b45309' : '#e2e8f0'));
             let textColor = index < 3 ? 'white' : '#333';
             
@@ -633,7 +629,7 @@
                         <div style="width:30px; height:30px; background:${rankBg}; color:${textColor}; border-radius:50%; display:flex; justify-content:center; align-items:center; font-weight:bold; font-size:12px;">#${index + 1}</div>
                         <div>
                             <h4 style="font-size:13px; font-weight:700; color:#222;">${m.name}</h4>
-                            <p style="font-size:10px; color:#666;">টেলিগ্রাম মেম্বার</p>
+                            <p style="font-size:10px; color:#666;">আইডি: #${m.uid}</p>
                         </div>
                     </div>
                     <div style="font-size:14px; font-weight:800; color:#d32f2f;">${m.ref} টি রেফার</div>
@@ -771,7 +767,7 @@
 
     function submitDeposit() {
         let amt = parseFloat(document.getElementById('dep-amt').value);
-        let fileInput = document.getElementById('dep-screenshot');
+        let fileInput = document.getElementById('dep-file');
         if(isNaN(amt) || amt < 100) {
             alert('সর্বনিম্ন ডিপোজিট ১০০ টাকা!');
             return;
