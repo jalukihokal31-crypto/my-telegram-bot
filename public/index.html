@@ -318,7 +318,6 @@
                 <div class="stat-box"><span>DAILY LIMIT</span><h4>1000</h4></div>
                 <div class="stat-box"><span>SUBMITTED</span><h4 id="fb-sub">0</h4></div>
             </div>
-            <!-- ফেসবুক পাসওয়ার্ড বক্স -->
             <div class="password-box">
                 <div class="pass-text"><span>আজকের পাসওয়ার্ড/কোড</span><h4 id="fb-pass-copy">FBPASS2026</h4></div>
                 <button class="copy-btn" onclick="copyText('fb-pass-copy')"><i class="far fa-copy"></i> কপি করুন</button>
@@ -343,7 +342,6 @@
                 <div class="stat-box"><span>DAILY LIMIT</span><h4>1000</h4></div>
                 <div class="stat-box"><span>SUBMITTED</span><h4 id="in-sub">0</h4></div>
             </div>
-            <!-- ইনস্টাগ্রাম পাসওয়ার্ড বক্স -->
             <div class="password-box">
                 <div class="pass-text"><span>আজকের পাসওয়ার্ড/কোড</span><h4 id="insta-pass-copy">INSTAPASS2026</h4></div>
                 <button class="copy-btn" onclick="copyText('insta-pass-copy')"><i class="far fa-copy"></i> কপি করুন</button>
@@ -399,9 +397,7 @@
         </div>
         <div style="padding:0 20px;">
             <div class="section-title" style="padding:0 0 10px 0;"><i class="fas fa-trophy"></i> রিয়েল-টাইম লিডারবোর্ড</div>
-            <div id="leaderboard-list">
-                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে -->
-            </div>
+            <div id="leaderboard-list"></div>
         </div>
     </div>
 
@@ -439,46 +435,14 @@
         <div class="form-area">
             <div class="form-group"><label>গিফট কোড লিখুন</label><input type="text" id="gift-code" class="form-control" placeholder="উদা: BONUS50"></div>
             <button class="submit-btn" onclick="processGiftCode()">কোড ক্লেইম করুন</button>
-            <p style="font-size:10px; color:#888; text-align:center; margin-top:10px;">টেস্ট করার জন্য 'GROW2026' বা 'BONUS50' লিখুন</p>
         </div>
     </div>
 
     <!-- VIP PACKAGES PAGE -->
     <div id="page-vip-packages" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ভিআইপি প্যাকেজ</h4></div></div>
-        <div style="padding:20px;">
-            <div class="vip-card">
-                <div class="vc-header"><div class="vc-title"><div class="vc-icon"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-1</h3></div></div><div class="vc-badge">রেগুলার</div></div>
-                <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳200</div>
-                <div class="vc-stats-grid">
-                    <div class="vs-box"><span>কাজ</span><h4>2 টি</h4></div>
-                    <div class="vs-box"><span>রেট</span><h4>৳15</h4></div>
-                    <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
-                </div>
-                <button class="buy-pkg-btn" onclick="purchaseVip(1, 200, 'VIP-1', 2, 15, 30)">প্যাকেজ কিনুন</button>
-            </div>
-
-            <div class="vip-card">
-                <div class="vc-header"><div class="vc-title"><div class="vc-icon" style="background:#e0f2fe; color:#0284c7;"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-2</h3></div></div><div class="vc-badge">পপুলার</div></div>
-                <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳500</div>
-                <div class="vc-stats-grid">
-                    <div class="vs-box"><span>কাজ</span><h4>4 টি</h4></div>
-                    <div class="vs-box"><span>রেট</span><h4>৳20</h4></div>
-                    <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
-                </div>
-                <button class="buy-pkg-btn" onclick="purchaseVip(2, 500, 'VIP-2', 4, 20, 30)">প্যাকেজ কিনুন</button>
-            </div>
-
-            <div class="vip-card">
-                <div class="vc-header"><div class="vc-title"><div class="vc-icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>VIP-3</h3></div></div><div class="vc-badge">গোল্ডেন</div></div>
-                <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳1000</div>
-                <div class="vc-stats-grid">
-                    <div class="vs-box"><span>কাজ</span><h4>8 টি</h4></div>
-                    <div class="vs-box"><span>রেট</span><h4>৳25</h4></div>
-                    <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">30 দিন</h4></div>
-                </div>
-                <button class="buy-pkg-btn" onclick="purchaseVip(3, 1000, 'VIP-3', 8, 25, 30)">প্যাকেজ কিনুন</button>
-            </div>
+        <div style="padding:20px;" id="vip-packages-container">
+            <!-- ডাইনামিক ভিআইপি প্যাকেজ -->
         </div>
     </div>
 
@@ -503,9 +467,7 @@
     <!-- MONTHLY SALARY PAGE -->
     <div id="page-monthly-salary" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>মাসিক স্যালারি</h4></div></div>
-        <div style="padding:20px;" id="salary-container">
-            <!-- মাসিক স্যালারি টার্গেট ডাইনামিক রেন্ডার হবে -->
-        </div>
+        <div style="padding:20px;" id="salary-container"></div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
@@ -521,16 +483,11 @@
     let state = {
         bal: 0, pen: 0, app: 0, ref: 0, refInc: 0, uid: '', userName: '',
         tasks: { gmail: {c:0, h:[]}, fb: {c:0, h:[]}, insta: {c:0, h:[]} },
-        wHist: [], vip: null,
-        claimedSalaries: [],
-        usedGifts: [], wMethod: 'bKash', ads: { watched: 0, limit: 20 }
+        wHist: [], vip: null, claimedSalaries: [], usedGifts: [], wMethod: 'bKash', ads: { watched: 0, limit: 20 }
     };
-
-    const gifts = { 'GROW2026': 10, 'BONUS50': 50 };
 
     document.addEventListener("DOMContentLoaded", () => {
         let tg = window.Telegram?.WebApp;
-        
         if (tg) {
             tg.expand();
             let u = tg.initDataUnsafe?.user;
@@ -539,119 +496,75 @@
                 state.userName = u.first_name || (u.username ? '@' + u.username : "Member");
             }
         }
-        
         if (!state.uid) {
             state.uid = "TG_" + Math.floor(10000000 + Math.random() * 90000000);
             state.userName = "Telegram Member";
         }
 
-        // চেক করা ইউজার ব্লকড কিনা
+        // চেক ব্লকড ইউজার
         let blockedList = JSON.parse(localStorage.getItem('blocked_users_list') || '[]');
         if(blockedList.includes(state.uid)) {
-            alert('দুঃখিত! আপনার অ্যাকাউন্টটি অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
-            document.body.innerHTML = `<div style="text-align:center; margin-top:50px; color:red; font-weight:bold; font-size:16px;">আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।</div>`;
+            document.body.innerHTML = `<div style="text-align:center; margin-top:50px; color:red; font-weight:bold; font-size:16px;">আপনার অ্যাকাউন্টটি অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।</div>`;
             return;
         }
 
-        // অ্যাডমিন প্যানেল থেকে জিমেইল, ফেসবুক ও ইনস্টাগ্রামের পাসওয়ার্ড লোড করা
+        // পাসওয়ার্ড সিংক
         let gCfg = JSON.parse(localStorage.getItem('task_config_gmail') || '{}');
         if(gCfg.pass) document.getElementById('g-pass-copy').innerText = gCfg.pass;
-
         let fbCfg = JSON.parse(localStorage.getItem('task_config_fb') || '{}');
         if(fbCfg.pass) document.getElementById('fb-pass-copy').innerText = fbCfg.pass;
-
         let instaCfg = JSON.parse(localStorage.getItem('task_config_insta') || '{}');
         if(instaCfg.pass) document.getElementById('insta-pass-copy').innerText = instaCfg.pass;
 
-        // লোকালস্টোরেজ থেকে ইউজারের নিজস্ব ডেটা লোড করা
+        // লোড ইউজার স্টেট
         let savedData = JSON.parse(localStorage.getItem('user_state_' + state.uid) || '{}');
         if(savedData.bal !== undefined) state.bal = savedData.bal;
         if(savedData.ref !== undefined) state.ref = savedData.ref;
         if(savedData.refInc !== undefined) state.refInc = savedData.refInc;
         if(savedData.claimedSalaries) state.claimedSalaries = savedData.claimedSalaries;
         if(savedData.vip) state.vip = savedData.vip;
+        if(savedData.tasks) state.tasks = savedData.tasks;
 
-        // গ্লোবাল লিডারবোর্ডে ইউজার নিশ্চিতভাবে রেজিস্টার করা
+        // সিংক গ্লোবাল লিডারবোর্ড ও অ্যাডমিন প্যানেল রিয়েল-টাইম ডাটা
         let allMembers = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
         let mIndex = allMembers.findIndex(m => m.uid === state.uid);
         if(mIndex > -1) {
             allMembers[mIndex].name = state.userName;
             allMembers[mIndex].ref = state.ref;
+            allMembers[mIndex].bal = state.bal;
         } else {
-            allMembers.push({ uid: state.uid, name: state.userName, ref: state.ref });
+            allMembers.push({ uid: state.uid, name: state.userName, ref: state.ref, bal: state.bal });
         }
         localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
-
-        // রিয়েল রেফারেল ট্র্যাকিং (start_param হ্যান্ডলিং)
-        if (tg) {
-            let startParam = tg.initDataUnsafe?.start_param;
-            if (startParam && startParam !== state.uid) {
-                let referralRecordKey = 'referred_by_' + state.uid;
-                if (!localStorage.getItem(referralRecordKey)) {
-                    localStorage.setItem(referralRecordKey, startParam);
-                    
-                    let referrerKey = 'user_state_' + startParam;
-                    let referrerData = JSON.parse(localStorage.getItem(referrerKey) || '{"bal":0, "ref":0, "refInc":0, "claimedSalaries":[], "vip":null}');
-                    referrerData.ref += 1;
-                    referrerData.refInc += 2.00;
-                    referrerData.bal += 2.00;
-                    localStorage.setItem(referrerKey, JSON.stringify(referrerData));
-                }
-            }
-        }
 
         document.getElementById('user-name').innerText = state.userName;
         document.getElementById('user-avatar').innerText = state.userName.charAt(0).toUpperCase();
 
         saveUserState();
-        updateGlobalLeaderboard();
-
-        let loaded = false;
-        let safetyTimer = setTimeout(() => {
-            if(!loaded) {
-                loaded = true;
-                document.getElementById('loading-overlay').style.display = 'none';
-                updateAll();
-            }
-        }, 1500);
-
-        if (typeof google !== 'undefined') {
-            google.script.run.withSuccessHandler(function(res) {
-                if(!loaded) {
-                    loaded = true;
-                    clearTimeout(safetyTimer);
-                    state.bal = parseFloat(res.bal) || state.bal;
-                    state.ref = parseInt(res.ref) || state.ref;
-                    state.refInc = state.ref * 2.00;
-                    
-                    document.getElementById('loading-overlay').style.display = 'none';
-                    updateAll();
-                }
-            }).getUserData(state.uid, state.userName);
-        } else {
-            clearTimeout(safetyTimer);
-            document.getElementById('loading-overlay').style.display = 'none';
-            updateAll();
-        }
+        renderVipPackages();
+        updateAll();
+        document.getElementById('loading-overlay').style.display = 'none';
     });
 
     function saveUserState() {
         let currentState = {
-            bal: state.bal,
-            ref: state.ref,
-            refInc: state.refInc,
-            claimedSalaries: state.claimedSalaries,
-            vip: state.vip
+            bal: state.bal, ref: state.ref, refInc: state.refInc,
+            claimedSalaries: state.claimedSalaries, vip: state.vip, tasks: state.tasks
         };
         localStorage.setItem('user_state_' + state.uid, JSON.stringify(currentState));
+        
+        // রিয়েল-টাইম গ্লোবাল লিডারবোর্ডে ব্যালেন্স ও তথ্য আপডেট
+        let allMembers = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
+        let mIndex = allMembers.findIndex(m => m.uid === state.uid);
+        if(mIndex > -1) {
+            allMembers[mIndex].bal = state.bal;
+            allMembers[mIndex].ref = state.ref;
+            allMembers[mIndex].name = state.userName;
+            localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
+        }
     }
 
     function updateAll() {
-        let savedData = JSON.parse(localStorage.getItem('user_state_' + state.uid) || '{}');
-        if(savedData.bal !== undefined) state.bal = savedData.bal;
-        if(savedData.ref !== undefined) state.ref = savedData.ref;
-        if(savedData.refInc !== undefined) state.refInc = savedData.refInc;
-
         document.querySelectorAll('.app-balance').forEach(e => e.innerText = '৳ ' + state.bal.toFixed(2));
         document.getElementById('app-pending').innerText = '৳ ' + state.pen.toFixed(2);
         document.getElementById('acc-id').innerText = '#' + state.uid;
@@ -661,26 +574,20 @@
         document.getElementById('ref-pg-earn').innerText = '৳ ' + state.refInc.toFixed(2);
         document.getElementById('ad-watched-count').innerText = state.ads.watched + ' / ' + state.ads.limit;
 
+        document.getElementById('gmail-sub').innerText = state.tasks.gmail.c;
+        document.getElementById('fb-sub').innerText = state.tasks.fb.c;
+        document.getElementById('in-sub').innerText = state.tasks.insta.c;
+
         updateGlobalLeaderboard();
         renderSalaryPage();
+        renderTaskHistories();
         saveUserState();
     }
 
     function updateGlobalLeaderboard() {
         let container = document.getElementById('leaderboard-list');
         if(!container) return;
-
         let allMembers = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
-        
-        let existingIndex = allMembers.findIndex(m => m.uid === state.uid);
-        if(existingIndex !== -1) {
-            allMembers[existingIndex].ref = state.ref;
-            allMembers[existingIndex].name = state.userName;
-        } else {
-            allMembers.push({ uid: state.uid, name: state.userName, ref: state.ref });
-        }
-
-        localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
         allMembers.sort((a, b) => b.ref - a.ref);
 
         if(allMembers.length === 0) {
@@ -692,7 +599,6 @@
         allMembers.forEach((m, index) => {
             let rankBg = index === 0 ? '#f59e0b' : (index === 1 ? '#94a3b8' : (index === 2 ? '#b45309' : '#e2e8f0'));
             let textColor = index < 3 ? 'white' : '#333';
-            
             html += `
                 <div style="background:white; border:1px solid #ffebee; border-radius:12px; padding:12px 15px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <div style="display:flex; align-items:center; gap:12px;">
@@ -702,21 +608,121 @@
                             <p style="font-size:10px; color:#666;">আইডি: #${m.uid}</p>
                         </div>
                     </div>
-                    <div style="font-size:14px; font-weight:800; color:#d32f2f;">${m.ref} টি রেফার</div>
+                    <div style="font-size:14px; font-weight:800; color:#d32f2f;">${m.ref || 0} টি রেফার</div>
                 </div>
             `;
         });
-
         container.innerHTML = html;
+    }
+
+    function renderTaskHistories() {
+        ['gmail', 'fb', 'insta'].forEach(type => {
+            let histDiv = document.getElementById(type === 'gmail' ? 'gmail-hist' : (type === 'fb' ? 'fb-hist' : 'in-hist'));
+            if(!histDiv) return;
+            let histList = state.tasks[type].h || [];
+            if(histList.length === 0) {
+                histDiv.innerHTML = `<p style="font-size:11px; color:#888; text-align:center;">কোনো সাবমিশন নেই।</p>`;
+                return;
+            }
+            let hHtml = '';
+            histList.forEach(item => {
+                hHtml += `
+                    <div class="th-item">
+                        <div class="th-info">
+                            <h4>${item.accId}</h4>
+                            <p>রেট: ৳${item.rate} | সময়: ${item.time}</p>
+                        </div>
+                        <div class="th-status pending"><i class="fas fa-clock"></i> পেন্ডিং</div>
+                    </div>
+                `;
+            });
+            histDiv.innerHTML = hHtml;
+        });
+    }
+
+    function submitSocialTask(type, idField, passField, defaultRate) {
+        let accId = document.getElementById(idField).value.trim();
+        let passVal = document.getElementById(passField).value.trim();
+        if(!accId || !passVal) {
+            alert('সবগুলো ঘর পূরণ করুন!');
+            return;
+        }
+
+        // অ্যাডমিন প্যানেল থেকে সেট করা লাইভ রেট চেক করা
+        let cfg = JSON.parse(localStorage.getItem('task_config_' + type) || '{}');
+        let rate = cfg.rate ? parseFloat(cfg.rate) : defaultRate;
+
+        state.tasks[type].c += 1;
+        state.pen += rate;
+        state.tasks[type].h.unshift({ accId, rate, time: new Date().toLocaleTimeString() });
+
+        // অ্যাডমিন প্যানেলের পেন্ডিং টাস্ক লিস্টে লাইভ পাঠানোর জন্য সেভ করা
+        let allPendingTasks = JSON.parse(localStorage.getItem('admin_pending_tasks') || '[]');
+        allPendingTasks.unshift({ uid: state.uid, userName: state.userName, type, accId, rate, time: new Date().toLocaleTimeString() });
+        localStorage.setItem('admin_pending_tasks', JSON.stringify(allPendingTasks));
+
+        document.getElementById(idField).value = '';
+        document.getElementById(passField).value = '';
+        
+        saveUserState();
+        updateAll();
+        alert('সফলভাবে সাবমিট হয়েছে! অ্যাডমিন প্যানেলে পেন্ডিং লিস্টে যোগ হয়েছে।');
+    }
+
+    function renderVipPackages() {
+        let container = document.getElementById('vip-packages-container');
+        if(!container) return;
+        let customVips = JSON.parse(localStorage.getItem('admin_vip_packages') || '[]');
+        
+        let defaultVips = [
+            { id: 1, name: 'VIP-1', price: 200, tasks: 2, rate: 15, days: 30, badge: 'রেগুলার' },
+            { id: 2, name: 'VIP-2', price: 500, tasks: 4, rate: 20, days: 30, badge: 'পপুলার' },
+            { id: 3, name: 'VIP-3', price: 1000, tasks: 8, rate: 25, days: 30, badge: 'গোল্ডেন' }
+        ];
+
+        let list = customVips.length > 0 ? customVips : defaultVips;
+        let html = '';
+        list.forEach(v => {
+            html += `
+                <div class="vip-card">
+                    <div class="vc-header"><div class="vc-title"><div class="vc-icon"><i class="fas fa-crown"></i></div><div class="vc-name"><h3>${v.name}</h3></div></div><div class="vc-badge">${v.badge || 'VIP'}</div></div>
+                    <div style="font-size:24px; font-weight:800; color:#164e63; margin-bottom:15px;">৳${v.price}</div>
+                    <div class="vc-stats-grid">
+                        <div class="vs-box"><span>কাজ</span><h4>${v.tasks || v.tasksCount || 2} টি</h4></div>
+                        <div class="vs-box"><span>রেট</span><h4>৳${v.rate || 15}</h4></div>
+                        <div class="vs-box" style="background:#fff8e1; border-color:#fce69d;"><span>মেয়াদ</span><h4 style="color:#d32f2f;">${v.days || 30} দিন</h4></div>
+                    </div>
+                    <button class="buy-pkg-btn" onclick="purchaseVip('${v.name}', ${v.price})">প্যাকেজ কিনুন</button>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function purchaseVip(name, price) {
+        if(state.bal < price) {
+            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই! দয়া করে আগে ডিপোজিট করুন।');
+            switchPage('deposit');
+            return;
+        }
+        
+        // অ্যাডমিন প্যানেলের অ্যাপ্রুভালের জন্য পেন্ডিং রিকোয়েস্টে পাঠানো
+        let pendingVip = JSON.parse(localStorage.getItem('pending_vip_requests') || '[]');
+        pendingVip.push({ uid: state.uid, userName: state.userName, packageName: name, price: price });
+        localStorage.setItem('pending_vip_requests', JSON.stringify(pendingVip));
+
+        state.bal -= price;
+        saveUserState();
+        updateAll();
+        alert(name + ' প্যাকেজ কেনার রিকোয়েস্ট অ্যাডমিনের কাছে পাঠানো হয়েছে! অ্যাপ্রুভ হওয়ার পর সচল হবে।');
+        switchPage('package-income');
     }
 
     function renderSalaryPage() {
         let container = document.getElementById('salary-container');
         if(!container) return;
-
         let hasVip = state.vip !== null;
         let currentRefs = state.ref;
-
         let tiers = [
             { id: 1, reqRef: 5, reward: 50, title: '৫ রেফার স্যালারি (৳৫০)' },
             { id: 2, reqRef: 10, reward: 120, title: '১০ রেফার স্যালারি (৳১২০)' },
@@ -724,12 +730,10 @@
             { id: 4, reqRef: 20, reward: 250, title: '২০ রেফার স্যালারি (৳২৫০)' },
             { id: 5, reqRef: 30, reward: 500, title: '৩০ রেফার স্যালারি (৳৫০০)' }
         ];
-
         let html = '';
         tiers.forEach(t => {
             let isUnlocked = hasVip && (currentRefs >= t.reqRef);
             let isClaimed = state.claimedSalaries.includes(t.id);
-
             let btnHtml = '';
             if(isClaimed) {
                 btnHtml = `<button class="btn-claim-locked" style="background:#e0e0e0; color:#888;"><i class="fas fa-check"></i> ইতিমধ্যে ক্লেইম করা হয়েছে</button>`;
@@ -739,7 +743,6 @@
                 let reason = !hasVip ? 'শর্ত: ১টি ভিআইপি প্যাকেজ কিনতে হবে!' : `শর্ত: আরও ${t.reqRef - currentRefs}টি রেফার প্রয়োজন!`;
                 btnHtml = `<button class="btn-claim-locked"><i class="fas fa-lock"></i> ${reason}</button>`;
             }
-
             html += `
                 <div class="target-card">
                     <div class="t-card-header"><div class="t-card-title">${t.title}</div><div class="t-card-amount">৳${t.reward}</div></div>
@@ -748,7 +751,6 @@
                 </div>
             `;
         });
-
         container.innerHTML = html;
     }
 
@@ -788,19 +790,15 @@
             document.getElementById('ad-limit-msg').style.display = 'block';
             return;
         }
-
         let overlay = document.getElementById('ad-overlay');
         let timerCircle = document.getElementById('ad-timer');
         let statusText = document.getElementById('ad-status-text');
         let visitBtn = document.getElementById('ad-visit-btn');
-
         overlay.style.display = 'flex';
         visitBtn.style.display = 'none';
         statusText.innerText = "দয়া করে টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন...";
-        
         let timeLeft = 15;
         timerCircle.innerText = timeLeft;
-
         let countdown = setInterval(() => {
             timeLeft--;
             timerCircle.innerText = timeLeft;
@@ -824,16 +822,17 @@
 
     function processGiftCode() {
         let code = document.getElementById('gift-code').value.trim();
-        if(gifts[code]) {
+        let giftCodesDB = JSON.parse(localStorage.getItem('admin_gift_codes') || '{"GROW2026":10, "BONUS50":50}');
+        if(giftCodesDB[code]) {
             if(state.usedGifts.includes(code)) {
                 alert('এই কোডটি আপনি ইতিমধ্যে ব্যবহার করেছেন!');
                 return;
             }
-            state.bal += gifts[code];
+            state.bal += giftCodesDB[code];
             state.usedGifts.push(code);
             saveUserState();
             updateAll();
-            alert('অভিনন্দন! সফলভাবে ' + gifts[code] + ' টাকা যোগ হয়েছে।');
+            alert('অভিনন্দন! সফলভাবে ' + giftCodesDB[code] + ' টাকা যোগ হয়েছে।');
         } else {
             alert('ভুল বা মেয়াদোত্তীর্ণ গিফট কোড!');
         }
@@ -846,67 +845,36 @@
             alert('সর্বনিম্ন ডিপোজিট ১০০ টাকা!');
             return;
         }
-        if(fileInput.files.length === 0) {
-            alert('দয়া করে পেমেন্টের স্ক্রিনশট বা ছবি সিলেক্ট করুন!');
-            return;
-        }
         state.pen += amt;
+        
+        let pendingDeps = JSON.parse(localStorage.getItem('admin_pending_deposits') || '[]');
+        pendingDeps.unshift({ uid: state.uid, userName: state.userName, amount: amt, time: new Date().toLocaleTimeString() });
+        localStorage.setItem('admin_pending_deposits', JSON.stringify(pendingDeps));
+
         saveUserState();
         updateAll();
-        alert('ডিপোজিট রিকোয়েস্ট এবং স্ক্রিনশট সফলভাবে সাবমিট হয়েছে!');
+        alert('ডিপোজিট রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে!');
         switchPage('home');
     }
 
     function submitWithdraw() {
         let amt = parseFloat(document.getElementById('w-amt').value);
         let num = document.getElementById('w-num').value.trim();
-        if(isNaN(amt) || amt < 110) {
-            alert('সর্বনিম্ন উইথড্র ১১০ টাকা!');
-            return;
-        }
-        if(amt > state.bal) {
-            alert('পর্যাপ্ত ব্যালেন্স নেই!');
-            return;
-        }
-        if(!num) {
-            alert('একাউন্ট নাম্বার দিন!');
+        if(isNaN(amt) || amt < 110 || amt > state.bal || !num) {
+            alert('সঠিক পরিমাণ ও একাউন্ট নাম্বার দিন!');
             return;
         }
         state.bal -= amt;
         state.pen += amt;
+
+        let pendingW = JSON.parse(localStorage.getItem('admin_pending_withdraws') || '[]');
+        pendingW.unshift({ uid: state.uid, userName: state.userName, amount: amt, number: num, method: state.wMethod, time: new Date().toLocaleTimeString() });
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingW));
+
         saveUserState();
         updateAll();
-        alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+        alert('উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!');
         switchPage('home');
-    }
-
-    function submitSocialTask(type, idField, passField, rate) {
-        let idVal = document.getElementById(idField).value.trim();
-        let passVal = document.getElementById(passField).value.trim();
-        if(!idVal || !passVal) {
-            alert('সবগুলো ঘর পূরণ করুন!');
-            return;
-        }
-        state.tasks[type].c += 1;
-        state.pen += rate;
-        document.getElementById(type === 'gmail' ? 'gmail-sub' : (type === 'fb' ? 'fb-sub' : 'in-sub')).innerText = state.tasks[type].c;
-        saveUserState();
-        updateAll();
-        alert('সফলভাবে সাবমিট হয়েছে! রিভিউ শেষে ব্যালেন্সে যোগ হবে।');
-    }
-
-    function purchaseVip(id, price, name, tasksCount, rate, days) {
-        if(state.bal < price) {
-            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই! দয়া করে আগে ডিপোজিট করুন।');
-            switchPage('deposit');
-            return;
-        }
-        state.bal -= price;
-        state.vip = { id, name, tasksCount, rate, days, completed: 0 };
-        saveUserState();
-        updateAll();
-        alert(name + ' প্যাকেজ সফলভাবে কেনা হয়েছে!');
-        switchPage('package-income');
     }
 </script>
 </body>
