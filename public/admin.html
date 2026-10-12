@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Admin Dashboard - Touch Earning BD</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Noto Sans Bengali', sans-serif; }
+    body { background-color: #f1f5f9; color: #1e293b; display: flex; justify-content: center; }
+    .admin-container { width: 100%; max-width: 450px; background-color: #f8fafc; min-height: 100vh; position: relative; padding-bottom: 50px; box-shadow: 0 0 25px rgba(0,0,0,0.1); }
+    
+    #admin-login-section { padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; text-align: center; background: #fff; }
+    .login-box { background: #fff; border: 1px solid #e2e8f0; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .login-box h2 { font-size: 20px; color: #0f172a; margin-bottom: 8px; font-weight: 700; }
+    .login-box p { font-size: 11px; color: #64748b; margin-bottom: 20px; }
+    
+    #admin-dashboard { display: none; }
+    .admin-topbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #fff; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 50; }
+    .brand-area { display: flex; align-items: center; gap: 10px; }
+    .brand-icon { width: 32px; height: 32px; background: #6366f1; color: white; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 14px; }
+    .brand-text h4 { font-size: 13px; font-weight: 700; color: #0f172a; line-height: 1.2; }
+    .brand-text p { font-size: 9px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+    .menu-toggle-btn { background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 8px; color: #334155; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+
+    .overview-title { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; padding: 20px 20px 10px 20px; letter-spacing: 0.5px; }
+    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
+    .ov-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .ov-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 13px; margin-bottom: 12px; }
+    .ov-card h3 { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
+    .ov-card span { font-size: 11px; color: #64748b; font-weight: 600; }
+
+    .action-banner { margin: 15px 20px; background: linear-gradient(135deg, #059669, #10b981); border-radius: 16px; padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+    .action-banner.bal-card { background: linear-gradient(135deg, #059669, #34d399); }
+
+    /* Slide-out Menu Drawer */
+    #sidebar-menu { position: fixed; top: 0; right: -100%; width: 100%; max-width: 320px; height: 100vh; background: #fff; z-index: 1000; box-shadow: -5px 0 25px rgba(0,0,0,0.15); transition: 0.3s ease; padding: 20px; overflow-y: auto; }
+    #sidebar-menu.open { right: 0; }
+    .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+    .menu-header h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .close-menu { background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; color: #334155; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+    
+    .menu-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+    .menu-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
+    .menu-item i { font-size: 16px; color: #6366f1; width: 25px; text-align: center; }
+    .menu-item .m-text h4 { font-size: 12px; font-weight: 700; color: #0f172a; }
+    .menu-item .m-text p { font-size: 9px; color: #64748b; }
+    .menu-item.logout { background: #fef2f2; border-color: #fee2e2; }
+    .menu-item.logout i, .menu-item.logout h4 { color: #ef4444; }
+
+    #menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 900; display: none; }
+
+    .content-view { padding: 20px; display: none; }
+    .content-view.active { display: block; }
+    .back-dash-btn { background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; color: #334155; cursor: pointer; margin-bottom: 15px; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; }
+    .form-control { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; background: #fff; }
+    .btn-save { width: 100%; background: #6366f1; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 5px; }
+
+    .user-list-item { background: #fff; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .btn-group { display: flex; gap: 4px; }
+</style>
+</head>
+<body>
+
+<div class="admin-container">
+    
+    <!-- LOGIN SECTION -->
+    <div id="admin-login-section">
+        <div class="login-box">
+            <h2><i class="fas fa-shield-alt" style="color: #6366f1;"></i> Touch Earning BD</h2>
+            <p>ADMIN PANEL LOGIN</p>
+            <div class="form-group">
+                <input type="password" id="admin-pass" class="form-control" placeholder="পাসওয়ার্ড লিখুন (admin123)">
+            </div>
+            <button class="btn-save" onclick="verifyAdminLogin()">লগইন করুন</button>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="admin-dashboard">
+        <div class="admin-topbar">
+            <div class="brand-area">
+                <div class="brand-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="brand-text">
+                    <h4>Touch Earning BD</h4>
+                    <p>Admin Dashboard</p>
+                </div>
+            </div>
+            <button class="menu-toggle-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+
+        <!-- HOME OVERVIEW -->
+        <div id="view-home" class="content-view active">
+            <div class="overview-title">Overview</div>
+            <div class="overview-grid">
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#eff6ff; color:#3b82f6;"><i class="fas fa-users"></i></div>
+                    <h3 id="stat-total-users">0</h3>
+                    <span>Total Users</span>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#f0fdf4; color:#10b981;"><i class="fas fa-user-check"></i></div>
+                    <h3 id="stat-active-users">0</h3>
+                    <span>Active Users</span>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#fef2f2; color:#ef4444;"><i class="fas fa-user-slash"></i></div>
+                    <h3 id="stat-blocked-users">0</h3>
+                    <span>Blocked Users</span>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#fdf4ff; color:#a855f7;"><i class="fas fa-crown"></i></div>
+                    <h3 id="stat-pending-vip">0</h3>
+                    <span>Pending VIP</span>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#fffbeb; color:#f59e0b;"><i class="fas fa-clock"></i></div>
+                    <h3 id="stat-pending-dep">0</h3>
+                    <span>Pending Deposits</span>
+                </div>
+                <div class="ov-card">
+                    <div class="ov-icon" style="background:#fff7ed; color:#f97316;"><i class="fas fa-wallet"></i></div>
+                    <h3 id="stat-pending-w">0</h3>
+                    <span>Pending Withdraws</span>
+                </div>
+            </div>
+
+            <div class="action-banner" onclick="switchView('deposits')">
+                <div class="ab-left">
+                    <h4>Deposit Requests</h4>
+                    <p>Review & approve user add-funds</p>
+                </div>
+                <div class="ab-icon"><i class="fas fa-chevron-right"></i></div>
+            </div>
+
+            <div class="action-banner bal-card" onclick="switchView('users')">
+                <div class="ab-left">
+                    <p>MY ADMIN BALANCE (অ্যাডমিন ব্যালেন্স)</p>
+                    <h2 id="admin-wallet-bal">৳ 5,000.00</h2>
+                </div>
+                <div class="ab-icon"><i class="fas fa-coins"></i></div>
+            </div>
+        </div>
+
+        <!-- 1. MANAGE USERS -->
+        <div id="view-users" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Manage Users (টেলিগ্রাম আইডি, ব্যালেন্স, ব্লক ও ডিলিট)</h3>
+            <div id="admin-users-container"></div>
+        </div>
+
+        <!-- 2. DEPOSITS -->
+        <div id="view-deposits" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Deposit Requests & Settings</h3>
+            <div class="form-group"><label>বিকাশ/নগদ পার্সোনাল নাম্বার</label><input type="text" id="cfg-pay-num" class="form-control" value="01330051841"></div>
+            <div class="form-group"><label>সর্বনিম্ন ডিপোজিট (টাকা)</label><input type="number" id="cfg-min-dep" class="form-control" value="100"></div>
+            <button class="btn-save" onclick="alert('ডিপোজিট সেটিংস আপডেট হয়েছে!')">সেটিংস সেভ করুন</button>
+            <div style="margin-top: 20px;">
+                <label style="font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; display: block;">পেন্ডিং ডিপোজিট লিস্ট:</label>
+                <div id="admin-deposits-list" style="font-size: 12px; color: #64748b; background: #fff; padding: 10px; border-radius: 8px; border:1px solid #e2e8f0;">কোনো পেন্ডিং ডিপোজিট নেই।</div>
+            </div>
+        </div>
+
+        <!-- 3. WITHDRAWS -->
+        <div id="view-withdraws" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Manage Withdraws (পেন্ডিং উইথড্র রিকোয়েস্ট)</h3>
+            <div class="form-group"><label>সর্বনিম্ন উইথড্র লিমিট (টাকা)</label><input type="number" id="cfg-min-w" class="form-control" value="110"></div>
+            <button class="btn-save" onclick="alert('উইথড্র লিমিট আপডেট হয়েছে!')">সেভ করুন</button>
+            <div style="margin-top: 20px;" id="admin-withdraws-list"><p style="font-size:12px; color:#64748b;">কোনো পেন্ডিং উইথড্র নেই।</p></div>
+        </div>
+
+        <!-- 4. GMAIL TASK CONTROL (পাসওয়ার্ড ও লিমিট সহ) -->
+        <div id="view-gmail" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Gmail Task Control & Submissions</h3>
+            <div class="form-group"><label>জিমেইল রেট (টাকা)</label><input type="number" id="cfg-gmail-rate" class="form-control" value="19"></div>
+            <div class="form-group"><label>জিমেইল আজকের পাসওয়ার্ড (পরিবর্তনযোগ্য)</label><input type="text" id="cfg-gmail-pass" class="form-control" value="DRAGONPOROMAX"></div>
+            <div class="form-group"><label>দৈনিক লিমিট</label><input type="number" id="cfg-gmail-limit" class="form-control" value="1000"></div>
+            <button class="btn-save" onclick="saveTaskConfig('gmail')">জিমেইল সেটিংস সেভ করুন</button>
+            <div style="margin-top: 20px;">
+                <label style="font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; display: block;">পেন্ডিং জিমেইল সাবমিশন হিস্ট্রি:</label>
+                <div style="font-size: 12px; color: #64748b; background: #fff; padding: 10px; border-radius: 8px; border:1px solid #e2e8f0;">কোনো সাবমিশন নেই।</div>
+            </div>
+        </div>
+
+        <!-- 5. FACEBOOK TASK CONTROL (পাসওয়ার্ড ও লিমিট সহ) -->
+        <div id="view-fb" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Facebook Task Control & Submissions</h3>
+            <div class="form-group"><label>ফেসবুক রেট (টাকা)</label><input type="number" id="cfg-fb-rate" class="form-control" value="4"></div>
+            <div class="form-group"><label>ফেসবুক আজকের পাসওয়ার্ড/কোড (পরিবর্তনযোগ্য)</label><input type="text" id="cfg-fb-pass" class="form-control" value="FBPASS2026"></div>
+            <div class="form-group"><label>দৈনিক লিমিট</label><input type="number" id="cfg-fb-limit" class="form-control" value="1000"></div>
+            <button class="btn-save" onclick="saveTaskConfig('fb')">ফেসবুক সেটিংস সেভ করুন</button>
+            <div style="margin-top: 20px;">
+                <label style="font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; display: block;">পেন্ডিং ফেসবুক সাবমিশন হিস্ট্রি:</label>
+                <div style="font-size: 12px; color: #64748b; background: #fff; padding: 10px; border-radius: 8px; border:1px solid #e2e8f0;">কোনো সাবমিশন নেই।</div>
+            </div>
+        </div>
+
+        <!-- 6. INSTAGRAM TASK CONTROL (পাসওয়ার্ড ও লিমিট সহ) -->
+        <div id="view-insta" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Instagram Task Control & Submissions</h3>
+            <div class="form-group"><label>ইনস্টাগ্রাম রেট (টাকা)</label><input type="number" id="cfg-insta-rate" class="form-control" value="3"></div>
+            <div class="form-group"><label>ইনস্টাগ্রাম আজকের পাসওয়ার্ড/কোড (পরিবর্তনযোগ্য)</label><input type="text" id="cfg-insta-pass" class="form-control" value="INSTAPASS2026"></div>
+            <div class="form-group"><label>দৈনিক লিমিট</label><input type="number" id="cfg-insta-limit" class="form-control" value="1000"></div>
+            <button class="btn-save" onclick="saveTaskConfig('insta')">ইনস্টাগ্রাম সেটিংস সেভ করুন</button>
+            <div style="margin-top: 20px;">
+                <label style="font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; display: block;">পেন্ডিং ইনস্টাগ্রাম সাবমিশন হিস্ট্রি:</label>
+                <div style="font-size: 12px; color: #64748b; background: #fff; padding: 10px; border-radius: 8px; border:1px solid #e2e8f0;">কোনো সাবমিশন নেই।</div>
+            </div>
+        </div>
+
+        <!-- 7. WATCH ADS CONTROL -->
+        <div id="view-ads" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Watch Ads Control (ওয়াচ অ্যাডস)</h3>
+            <div class="form-group"><label>প্রতি এড রেট (টাকা)</label><input type="number" id="cfg-ad-rate" class="form-control" value="1.00"></div>
+            <div class="form-group"><label>দৈনিক এড দেখার সীমা</label><input type="number" id="cfg-ad-limit" class="form-control" value="20"></div>
+            <button class="btn-save" onclick="alert('এড সেটিংস আপডেট হয়েছে!')">সেভ করুন</button>
+        </div>
+
+        <!-- 8. TARGET BONUS -->
+        <div id="view-target" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Target Bonus Control (টার্গেট বোনাস)</h3>
+            <div class="form-group"><label>টার্গেট রেফার সংখ্যা</label><input type="number" id="cfg-tgt-ref" class="form-control" placeholder="উদা: ১০০"></div>
+            <div class="form-group"><label>বোনাস পরিমাণ (টাকা)</label><input type="number" id="cfg-tgt-amt" class="form-control" placeholder="উদা: ১০০০"></div>
+            <button class="btn-save" onclick="alert('টার্গেট বোনাস যোগ হয়েছে!')">নতুন টার্গেট যোগ করুন</button>
+        </div>
+
+        <!-- 9. TOP MEMBERS & LEADERBOARD -->
+        <div id="view-leaderboard" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Top Members & Referrals (লিডারবোর্ড)</h3>
+            <div id="admin-leaderboard-list"></div>
+        </div>
+
+        <!-- 10. GIFT CODES -->
+        <div id="view-gifts" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">Gift Codes Management (গিফট কোড)</h3>
+            <div class="form-group"><label>গিফট কোড (যেমন: BONUS50)</label><input type="text" id="cfg-gift-code" class="form-control" placeholder="কোড লিখুন"></div>
+            <div class="form-group"><label>টাকার পরিমাণ</label><input type="number" id="cfg-gift-amt" class="form-control" placeholder="টাকা"></div>
+            <div class="form-group"><label>ব্যবহারের সীমা (কতজন ক্লেইম করতে পারবে)</label><input type="number" id="cfg-gift-limit" class="form-control" value="50"></div>
+            <button class="btn-save" onclick="createAdminGiftCode()">গিফট কোড তৈরি করুন</button>
+            <div style="margin-top: 20px;">
+                <label style="font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; display: block;">পূর্বে তৈরি করা গিফট কোড হিস্ট্রি:</label>
+                <div id="admin-gift-history" style="font-size: 11px; color: #334155; background: #fff; border:1px solid #e2e8f0; padding: 10px; border-radius: 8px;">কোনো কোড নেই।</div>
+            </div>
+        </div>
+
+        <!-- 11. VIP PACKAGES -->
+        <div id="view-vip" class="content-view">
+            <button class="back-dash-btn" onclick="switchView('home')"><i class="fas fa-arrow-left"></i> ড্যাশবোর্ডে ফিরুন</button>
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 15px;">VIP Packages Management & History</h3>
+            
+            <div style="background:#fff; border:1px solid #e2e8f0; padding:15px; border-radius:12px; margin-bottom:20px;">
+                <h4 style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:10px;">➕ নতুন ভিআইপি প্যাকেজ তৈরি করুন</h4>
+                <div class="form-group"><label>প্যাকেজ নাম (যেমন: VIP-1)</label><input type="text" id="vip-name" class="form-control" placeholder="নাম দিন"></div>
+                <div class="form-group"><label>মূল্য (টাকা)</label><input type="number" id="vip-price" class="form-control" placeholder="টাকার পরিমাণ"></div>
+                <div class="form-group"><label>দৈনিক কাজ সংখ্যা</label><input type="number" id="vip-tasks" class="form-control" placeholder="কাজের সংখ্যা"></div>
+                <div class="form-group"><label>প্রতি কাজের রেট (টাকা)</label><input type="number" id="vip-rate" class="form-control" placeholder="রেট"></div>
+                <div class="form-group"><label>মেয়াদ (দিন)</label><input type="number" id="vip-days" class="form-control" value="30"></div>
+                <button class="btn-save" onclick="createNewVipPackage()">নতুন প্যাকেজ যোগ করুন</button>
+            </div>
+
+            <h4 style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:10px;">⏳ পেন্ডিং ভিআইপি ক্রয়ের হিস্ট্রি ও অ্যাপ্রুভাল</h4>
+            <div id="admin-vip-requests-list">
+                <div style="font-size: 12px; color: #64748b; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: center;">কোনো পেন্ডিং ভিআইপি রিকোয়েস্ট নেই।</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SLIDE-OUT MENU DRAWER -->
+<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="sidebar-menu">
+    <div class="menu-header">
+        <h3>Admin Menu</h3>
+        <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="menu-item" onclick="switchView('users'); toggleMenu();">
+        <i class="fas fa-users"></i>
+        <div class="m-text"><h4>Manage Users</h4><p>ইউজার আইডি, ব্লক ও ডিলিট</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('deposits'); toggleMenu();">
+        <i class="fas fa-wallet"></i>
+        <div class="m-text"><h4>Deposit Requests</h4><p>ডিপোজিট ও বিকাশ নাম্বার</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('withdraws'); toggleMenu();">
+        <i class="fas fa-money-bill-wave"></i>
+        <div class="m-text"><h4>Manage Withdraws</h4><p>পেন্ডিং উইথড্র কন্ট্রোল</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('vip'); toggleMenu();">
+        <i class="fas fa-crown"></i>
+        <div class="m-text"><h4>VIP Packages</h4><p>প্যাকেজ তৈরি ও পেন্ডিং হিস্ট্রি</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('gmail'); toggleMenu();">
+        <i class="fas fa-envelope"></i>
+        <div class="m-text"><h4>Gmail Submissions</h4><p>জিমেইল টাস্ক ও পাসওয়ার্ড</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('fb'); toggleMenu();">
+        <i class="fab fa-facebook"></i>
+        <div class="m-text"><h4>Facebook Submissions</h4><p>ফেসবুক টাস্ক ও পাসওয়ার্ড</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('insta'); toggleMenu();">
+        <i class="fab fa-instagram"></i>
+        <div class="m-text"><h4>Instagram Submissions</h4><p>ইনস্টাগ্রাম টাস্ক ও পাসওয়ার্ড</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('ads'); toggleMenu();">
+        <i class="fas fa-play-circle"></i>
+        <div class="m-text"><h4>Watch Ads Control</h4><p>এড রেট ও লিমিট</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('target'); toggleMenu();">
+        <i class="fas fa-bullseye"></i>
+        <div class="m-text"><h4>Target Bonus</h4><p>টার্গেট বোনাস আপডেট</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('leaderboard'); toggleMenu();">
+        <i class="fas fa-trophy"></i>
+        <div class="m-text"><h4>Top Members</h4><p>রেফার ও লিডারবোর্ড</p></div>
+    </div>
+    <div class="menu-item" onclick="switchView('gifts'); toggleMenu();">
+        <i class="fas fa-gift"></i>
+        <div class="m-text"><h4>Gift Codes</h4><p>গিফট কোড ও হিস্ট্রি</p></div>
+    </div>
+    <div class="menu-item logout" onclick="adminLogout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <div class="m-text"><h4>Logout</h4><p>লগআউট করুন</p></div>
+    </div>
+</div>
+
+<script>
+    const SECRET_ADMIN_PASS = "admin123";
+
+    function verifyAdminLogin() {
+        let pass = document.getElementById('admin-pass').value.trim();
+        if(pass === SECRET_ADMIN_PASS) {
+            localStorage.setItem('is_admin_logged', 'true');
+            loadDashboardData();
+        } else {
+            alert('ভুল পাসওয়ার্ড!');
+        }
+    }
+
+    function toggleMenu() {
+        let menu = document.getElementById('sidebar-menu');
+        let overlay = document.getElementById('menu-overlay');
+        if(menu.classList.contains('open')) {
+            menu.classList.remove('open');
+            menu.style.right = '-100%';
+            overlay.style.display = 'none';
+        } else {
+            menu.classList.add('open');
+            menu.style.right = '0';
+            overlay.style.display = 'block';
+        }
+    }
+
+    function switchView(viewName) {
+        document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-' + viewName).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function saveTaskConfig(type) {
+        if(type === 'gmail') {
+            let rate = document.getElementById('cfg-gmail-rate').value;
+            let pass = document.getElementById('cfg-gmail-pass').value;
+            let limit = document.getElementById('cfg-gmail-limit').value;
+            localStorage.setItem('task_config_gmail', JSON.stringify({ rate, pass, limit }));
+            alert('জিমেইল টাস্ক কনফিগারেশন ও পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!');
+        } else if(type === 'fb') {
+            let rate = document.getElementById('cfg-fb-rate').value;
+            let pass = document.getElementById('cfg-fb-pass').value;
+            let limit = document.getElementById('cfg-fb-limit').value;
+            localStorage.setItem('task_config_fb', JSON.stringify({ rate, pass, limit }));
+            alert('ফেসবুক টাস্ক কনফিগারেশন ও পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!');
+        } else if(type === 'insta') {
+            let rate = document.getElementById('cfg-insta-rate').value;
+            let pass = document.getElementById('cfg-insta-pass').value;
+            let limit = document.getElementById('cfg-insta-limit').value;
+            localStorage.setItem('task_config_insta', JSON.stringify({ rate, pass, limit }));
+            alert('ইনস্টাগ্রাম টাস্ক কনফিগারেশন ও পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!');
+        }
+    }
+
+    function loadDashboardData() {
+        document.getElementById('admin-login-section').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+
+        let leaderboard = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
+        let blockedUsers = JSON.parse(localStorage.getItem('blocked_users_list') || '[]');
+        let pendingVip = JSON.parse(localStorage.getItem('pending_vip_requests') || '[]');
+        let totalUsers = leaderboard.length;
+        
+        document.getElementById('stat-total-users').innerText = totalUsers;
+        document.getElementById('stat-active-users').innerText = Math.max(0, totalUsers - blockedUsers.length);
+        document.getElementById('stat-blocked-users').innerText = blockedUsers.length;
+        document.getElementById('stat-pending-vip').innerText = pendingVip.length;
+
+        // লোড সেভড টাস্ক কনফিগ যদি থাকে
+        let gCfg = JSON.parse(localStorage.getItem('task_config_gmail') || '{}');
+        if(gCfg.pass) document.getElementById('cfg-gmail-pass').value = gCfg.pass;
+        if(gCfg.rate) document.getElementById('cfg-gmail-rate').value = gCfg.rate;
+
+        let fbCfg = JSON.parse(localStorage.getItem('task_config_fb') || '{}');
+        if(fbCfg.pass) document.getElementById('cfg-fb-pass').value = fbCfg.pass;
+        if(fbCfg.rate) document.getElementById('cfg-fb-rate').value = fbCfg.rate;
+
+        let instaCfg = JSON.parse(localStorage.getItem('task_config_insta') || '{}');
+        if(instaCfg.pass) document.getElementById('cfg-insta-pass').value = instaCfg.pass;
+        if(instaCfg.rate) document.getElementById('cfg-insta-rate').value = instaCfg.rate;
+
+        // ইউজার লিস্ট রেন্ডার
+        let uContainer = document.getElementById('admin-users-container');
+        if(totalUsers === 0) {
+            uContainer.innerHTML = `<p style="font-size:12px; color:#64748b; text-align:center;">বটে বর্তমানে কোনো ইউজার নেই (জিরো)।</p>`;
+        } else {
+            let html = '';
+            leaderboard.forEach(m => {
+                let uData = JSON.parse(localStorage.getItem('user_state_' + m.uid) || '{"bal":0, "ref":0}');
+                let isBlocked = blockedUsers.includes(m.uid);
+                
+                html += `
+                    <div class="user-list-item">
+                        <div>
+                            <h4 style="font-size:13px; font-weight:700;">${m.name} ${isBlocked ? '<span style="color:red; font-size:10px;">[ব্লকড]</span>' : ''}</h4>
+                            <p style="font-size:10px; color:#64748b;">Telegram ID: #${m.uid} | Bal: ৳${uData.bal} | Ref: ${uData.ref}টি</p>
+                        </div>
+                        <div class="btn-group">
+                            <button style="background:#3b82f6; color:white; border:none; padding:5px 8px; border-radius:5px; font-size:9px; cursor:pointer;" onclick="editUserBal('${m.uid}', '${m.name}', ${uData.bal})">এডিট</button>
+                            <button style="background:${isBlocked ? '#10b981' : '#f59e0b'}; color:white; border:none; padding:5px 8px; border-radius:5px; font-size:9px; cursor:pointer;" onclick="toggleBlockUser('${m.uid}')">${isBlocked ? 'আনব্লক' : 'ব্লক'}</button>
+                            <button style="background:#ef4444; color:white; border:none; padding:5px 8px; border-radius:5px; font-size:9px; cursor:pointer;" onclick="deleteUser('${m.uid}')">ডিলিট</button>
+                        </div>
+                    </div>
+                `;
+            });
+            uContainer.innerHTML = html;
+        }
+
+        // ভিআইপি পেন্ডিং রিকোয়েস্ট ও হিস্ট্রি রেন্ডার
+        let vipContainer = document.getElementById('admin-vip-requests-list');
+        if(pendingVip.length === 0) {
+            vipContainer.innerHTML = `<div style="font-size:12px; color:#64748b; background:#fff; padding:12px; border-radius:8px; border: 1px solid #e2e8f0; text-align: center;">কোনো পেন্ডিং ভিআইপি রিকোয়েস্ট নেই।</div>`;
+        } else {
+            let vHtml = '';
+            pendingVip.forEach((req, idx) => {
+                vHtml += `
+                    <div style="background:#fff; border:1px solid #e2e8f0; padding:12px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="font-size:13px; font-weight:700;">${req.userName} (#${req.uid})</h4>
+                            <p style="font-size:11px; color:#059669; font-weight:600;">প্যাকেজ: ${req.packageName} (মূল্য: ৳${req.price})</p>
+                            <p style="font-size:9px; color:#64748b;">কাজ: ${req.tasksCount}টি | রেট: ৳${req.rate} | মেয়াদ: ${req.days} দিন</p>
+                        </div>
+                        <div class="btn-group">
+                            <button style="background:#10b981; color:white; border:none; padding:6px 10px; border-radius:6px; font-size:10px; cursor:pointer; font-weight:600;" onclick="approveVip(${idx})">অ্যাপ্রুভ</button>
+                            <button style="background:#ef4444; color:white; border:none; padding:6px 10px; border-radius:6px; font-size:10px; cursor:pointer; font-weight:600;" onclick="rejectVip(${idx})">রিজেক্ট</button>
+                        </div>
+                    </div>
+                `;
+            });
+            vipContainer.innerHTML = vHtml;
+        }
+
+        // লিডারবোর্ড রেন্ডার
+        let leadContainer = document.getElementById('admin-leaderboard-list');
+        leaderboard.sort((a, b) => b.ref - a.ref);
+        let lHtml = '';
+        leaderboard.forEach((m, idx) => {
+            let uData = JSON.parse(localStorage.getItem('user_state_' + m.uid) || '{"ref":0}');
+            lHtml += `
+                <div class="user-list-item">
+                    <div>
+                        <h4 style="font-size:13px; font-weight:700;">#${idx + 1} - ${m.name}</h4>
+                        <p style="font-size:10px; color:#64748b;">ID: #${m.uid} | মোট রেফার: ${uData.ref} টি</p>
+                    </div>
+                </div>
+            `;
+        });
+        leadContainer.innerHTML = lHtml || '<p style="font-size:12px; color:#64748b;">কোনো মেম্বার নেই।</p>';
+
+        // গিফট কোড হিস্ট্রি
+        let giftDiv = document.getElementById('admin-gift-history');
+        let giftsMeta = JSON.parse(localStorage.getItem('custom_gift_meta') || '[]');
+        if(giftsMeta.length > 0) {
+            let gStr = '';
+            giftsMeta.forEach(g => {
+                gStr += `<div style="margin-bottom:4px;">🔑 <b>${g.code}</b> — ৳${g.amt} (লিমিট: ${g.limit} জন)</div>`;
+            });
+            giftDiv.innerHTML = gStr;
+        }
+    }
+
+    function createNewVipPackage() {
+        let name = document.getElementById('vip-name').value.trim();
+        let price = parseFloat(document.getElementById('vip-price').value);
+        let tasks = parseInt(document.getElementById('vip-tasks').value);
+        let rate = parseFloat(document.getElementById('vip-rate').value);
+        let days = parseInt(document.getElementById('vip-days').value);
+
+        if(!name || isNaN(price) || isNaN(tasks) || isNaN(rate)) {
+            alert('দয়া করে সঠিক তথ্য দিয়ে ভিআইপি প্যাকেজ ফর্ম পূরণ করুন!');
+            return;
+        }
+
+        let vipList = JSON.parse(localStorage.getItem('admin_vip_packages') || '[]');
+        vipList.push({ name, price, tasks, rate, days });
+        localStorage.setItem('admin_vip_packages', JSON.stringify(vipList));
+
+        alert('নতুন ভিআইপি প্যাকেজ সফলভাবে তৈরি করা হয়েছে!');
+        document.getElementById('vip-name').value = '';
+        document.getElementById('vip-price').value = '';
+        document.getElementById('vip-tasks').value = '';
+        document.getElementById('vip-rate').value = '';
+    }
+
+    function approveVip(index) {
+        let pendingVip = JSON.parse(localStorage.getItem('pending_vip_requests') || '[]');
+        let req = pendingVip[index];
+        
+        let userKey = 'user_state_' + req.uid;
+        let uData = JSON.parse(localStorage.getItem(userKey) || '{"bal":0, "ref":0}');
+        uData.vip = {
+            name: req.packageName,
+            tasksCount: req.tasksCount,
+            rate: req.rate,
+            days: req.days,
+            completed: 0
+        };
+        localStorage.setItem(userKey, JSON.stringify(uData));
+
+        pendingVip.splice(index, 1);
+        localStorage.setItem('pending_vip_requests', JSON.stringify(pendingVip));
+
+        alert('ভিআইপি প্যাকেজ সফলভাবে অ্যাপ্রুভ করা হয়েছে!');
+        loadDashboardData();
+    }
+
+    function rejectVip(index) {
+        if(confirm('আপনি কি এই ভিআইপি রিকোয়েস্টটি রিজেক্ট করতে চান?')) {
+            let pendingVip = JSON.parse(localStorage.getItem('pending_vip_requests') || '[]');
+            pendingVip.splice(index, 1);
+            localStorage.setItem('pending_vip_requests', JSON.stringify(pendingVip));
+            alert('রিকোয়েস্ট রিজেক্ট করা হয়েছে।');
+            loadDashboardData();
+        }
+    }
+
+    function editUserBal(uid, name, bal) {
+        let newB = prompt(`User: ${name} (Telegram ID: #${uid})\nCurrent Balance: ৳${bal}\n\nNew Balance:`, bal);
+        if(newB !== null && !isNaN(newB)) {
+            let uData = JSON.parse(localStorage.getItem('user_state_' + uid) || '{}');
+            uData.bal = parseFloat(newB);
+            localStorage.setItem('user_state_' + uid, JSON.stringify(uData));
+            alert('ব্যালেন্স আপডেট হয়েছে!');
+            loadDashboardData();
+        }
+    }
+
+    function toggleBlockUser(uid) {
+        let blockedUsers = JSON.parse(localStorage.getItem('blocked_users_list') || '[]');
+        let index = blockedUsers.indexOf(uid);
+        if(index > -1) {
+            blockedUsers.splice(index, 1);
+            alert('ইউজার আনব্লক করা হয়েছে!');
+        } else {
+            blockedUsers.push(uid);
+            alert('ইউজার ব্লক করা হয়েছে!');
+        }
+        localStorage.setItem('blocked_users_list', JSON.stringify(blockedUsers));
+        loadDashboardData();
+    }
+
+    function deleteUser(uid) {
+        if(confirm('আপনি কি নিশ্চিতভাবে এই ইউজারকে ডিলিট করতে চান?')) {
+            let leaderboard = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
+            leaderboard = leaderboard.filter(m => m.uid !== uid);
+            localStorage.setItem('global_leaderboard', JSON.stringify(leaderboard));
+            localStorage.removeItem('user_state_' + uid);
+            localStorage.removeItem('referred_by_' + uid);
+            alert('ইউজার ডিলিট করা হয়েছে!');
+            loadDashboardData();
+        }
+    }
+
+    function createAdminGiftCode() {
+        let code = document.getElementById('cfg-gift-code').value.trim().toUpperCase();
+        let amt = parseFloat(document.getElementById('cfg-gift-amt').value);
+        let limit = parseInt(document.getElementById('cfg-gift-limit').value) || 50;
+
+        if(!code || isNaN(amt)) {
+            alert('কোড এবং টাকার পরিমাণ দিন!');
+            return;
+        }
+
+        let gifts = JSON.parse(localStorage.getItem('custom_gift_codes') || '{}');
+        gifts[code] = amt;
+        localStorage.setItem('custom_gift_codes', JSON.stringify(gifts));
+
+        let meta = JSON.parse(localStorage.getItem('custom_gift_meta') || '[]');
+        meta.push({ code, amt, limit });
+        localStorage.setItem('custom_gift_meta', JSON.stringify(meta));
+
+        alert('গিফট কোড সফলভাবে তৈরি করা হয়েছে!');
+        document.getElementById('cfg-gift-code').value = '';
+        document.getElementById('cfg-gift-amt').value = '';
+        loadDashboardData();
+    }
+
+    function adminLogout() {
+        localStorage.removeItem('is_admin_logged');
+        document.getElementById('admin-dashboard').style.display = 'none';
+        document.getElementById('admin-login-section').style.display = 'flex';
+        document.getElementById('admin-pass').value = '';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if(localStorage.getItem('is_admin_logged') === 'true') {
+            loadDashboardData();
+        }
+    });
+</script>
+</body>
+</html>
