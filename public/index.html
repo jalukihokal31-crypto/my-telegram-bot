@@ -165,10 +165,10 @@
 <div id="ad-overlay">
     <div class="ad-banner-box" onclick="openSmartLinkAndReward()">
         <h4 style="color: #f8fafc; font-size: 16px; margin-bottom: 5px;">🔥 স্পেশাল প্রমোশন অফার</h4>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">রিওয়ার্ড পেতে নিচের ব্যানার বা বাটনে ক্লিক করুন</p>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">রিওয়ার্ড পেতে নিচের ব্যানার বা বাটনে ক্লিক করুন</p>
         <div class="timer-circle" id="ad-timer">15</div>
-        <p id="ad-status-text" style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px;">টাইমার শেষ হওয়ার পর ক্লেইম করুন</p>
-        <button id="ad-visit-btn" class="ad-action-btn">🎁 ক্লেইম করুন ও রিওয়ার্ড নিন</button>
+        <p id="ad-status-text" style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px;">টাইমার শেষ হওয়ার পর ক্লেইম করুন</p>
+        <button id="ad-visit-btn" class="ad-action-btn">🎁 ক্লেইম করুন ও রিওয়ার্ড নিন</button>
     </div>
 </div>
 
@@ -318,6 +318,11 @@
                 <div class="stat-box"><span>DAILY LIMIT</span><h4>1000</h4></div>
                 <div class="stat-box"><span>SUBMITTED</span><h4 id="fb-sub">0</h4></div>
             </div>
+            <!-- ফেসবুক পাসওয়ার্ড বক্স -->
+            <div class="password-box">
+                <div class="pass-text"><span>আজকের পাসওয়ার্ড/কোড</span><h4 id="fb-pass-copy">FBPASS2026</h4></div>
+                <button class="copy-btn" onclick="copyText('fb-pass-copy')"><i class="far fa-copy"></i> কপি করুন</button>
+            </div>
         </div>
         <div class="form-area">
             <div class="form-group"><label>ফেসবুক আইডি</label><input type="text" id="f-id" class="form-control" placeholder="1000XXXXXXXXX"></div>
@@ -337,6 +342,11 @@
                 <div class="stat-box"><span>RATE</span><h4>৳3.00</h4></div>
                 <div class="stat-box"><span>DAILY LIMIT</span><h4>1000</h4></div>
                 <div class="stat-box"><span>SUBMITTED</span><h4 id="in-sub">0</h4></div>
+            </div>
+            <!-- ইনস্টাগ্রাম পাসওয়ার্ড বক্স -->
+            <div class="password-box">
+                <div class="pass-text"><span>আজকের পাসওয়ার্ড/কোড</span><h4 id="insta-pass-copy">INSTAPASS2026</h4></div>
+                <button class="copy-btn" onclick="copyText('insta-pass-copy')"><i class="far fa-copy"></i> কপি করুন</button>
             </div>
         </div>
         <div class="form-area">
@@ -370,12 +380,12 @@
         <div style="padding:20px;">
             <div class="target-card">
                 <div class="t-card-header"><div class="t-card-title">১০০ রেফার টার্গেট</div><div class="t-card-amount">৳১০০০</div></div>
-                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ১০০টি</div>
+                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ১০০টি</div>
                 <button class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
             </div>
             <div class="target-card">
                 <div class="t-card-header"><div class="t-card-title">২০০ রেফার টার্গেট</div><div class="t-card-amount">৳১৫০০</div></div>
-                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ২০০টি</div>
+                <div style="font-size:11px; color:#666; margin-bottom:8px;">সক্রিয় রেফার প্রয়োজন: ২০০টি</div>
                 <button class="btn-claim-locked"><i class="fas fa-lock"></i> টার্গেট পূরণ হয়নি</button>
             </div>
         </div>
@@ -390,7 +400,7 @@
         <div style="padding:0 20px;">
             <div class="section-title" style="padding:0 0 10px 0;"><i class="fas fa-trophy"></i> রিয়েল-টাইম লিডারবোর্ড</div>
             <div id="leaderboard-list">
-                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে (এখন একদম শূন্য থেকে শুরু হবে) -->
+                <!-- লিডারবোর্ড ডাইনামিক রেন্ডার হবে -->
             </div>
         </div>
     </div>
@@ -535,6 +545,24 @@
             state.userName = "Telegram Member";
         }
 
+        // চেক করা ইউজার ব্লকড কিনা
+        let blockedList = JSON.parse(localStorage.getItem('blocked_users_list') || '[]');
+        if(blockedList.includes(state.uid)) {
+            alert('দুঃখিত! আপনার অ্যাকাউন্টটি অ্যাডমিন কর্তৃক ব্লক করা হয়েছে।');
+            document.body.innerHTML = `<div style="text-align:center; margin-top:50px; color:red; font-weight:bold; font-size:16px;">আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।</div>`;
+            return;
+        }
+
+        // অ্যাডমিন প্যানেল থেকে জিমেইল, ফেসবুক ও ইনস্টাগ্রামের পাসওয়ার্ড লোড করা
+        let gCfg = JSON.parse(localStorage.getItem('task_config_gmail') || '{}');
+        if(gCfg.pass) document.getElementById('g-pass-copy').innerText = gCfg.pass;
+
+        let fbCfg = JSON.parse(localStorage.getItem('task_config_fb') || '{}');
+        if(fbCfg.pass) document.getElementById('fb-pass-copy').innerText = fbCfg.pass;
+
+        let instaCfg = JSON.parse(localStorage.getItem('task_config_insta') || '{}');
+        if(instaCfg.pass) document.getElementById('insta-pass-copy').innerText = instaCfg.pass;
+
         // লোকালস্টোরেজ থেকে ইউজারের নিজস্ব ডেটা লোড করা
         let savedData = JSON.parse(localStorage.getItem('user_state_' + state.uid) || '{}');
         if(savedData.bal !== undefined) state.bal = savedData.bal;
@@ -542,6 +570,17 @@
         if(savedData.refInc !== undefined) state.refInc = savedData.refInc;
         if(savedData.claimedSalaries) state.claimedSalaries = savedData.claimedSalaries;
         if(savedData.vip) state.vip = savedData.vip;
+
+        // গ্লোবাল লিডারবোর্ডে ইউজার নিশ্চিতভাবে রেজিস্টার করা
+        let allMembers = JSON.parse(localStorage.getItem('global_leaderboard') || '[]');
+        let mIndex = allMembers.findIndex(m => m.uid === state.uid);
+        if(mIndex > -1) {
+            allMembers[mIndex].name = state.userName;
+            allMembers[mIndex].ref = state.ref;
+        } else {
+            allMembers.push({ uid: state.uid, name: state.userName, ref: state.ref });
+        }
+        localStorage.setItem('global_leaderboard', JSON.stringify(allMembers));
 
         // রিয়েল রেফারেল ট্র্যাকিং (start_param হ্যান্ডলিং)
         if (tg) {
@@ -627,7 +666,6 @@
         saveUserState();
     }
 
-    // শূন্য থেকে শুরু হওয়া ডাইনামিক লিডারবোর্ড সিস্টেম (কোনো ডেমো আইডি ছাড়া)
     function updateGlobalLeaderboard() {
         let container = document.getElementById('leaderboard-list');
         if(!container) return;
@@ -646,7 +684,7 @@
         allMembers.sort((a, b) => b.ref - a.ref);
 
         if(allMembers.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#888; padding:20px;"><p>এখনো কোনো মেম্বার যুক্ত হয়নি।</p></div>`;
+            container.innerHTML = `<div style="text-align:center; color:#888; padding:20px;"><p>এখনো কোনো মেম্বার যুক্ত হয়নি।</p></div>`;
             return;
         }
 
@@ -694,11 +732,11 @@
 
             let btnHtml = '';
             if(isClaimed) {
-                btnHtml = `<button class="btn-claim-locked" style="background:#e0e0e0; color:#888;"><i class="fas fa-check"></i> ইতিমধ্যে ক্লেইম করা হয়েছে</button>`;
+                btnHtml = `<button class="btn-claim-locked" style="background:#e0e0e0; color:#888;"><i class="fas fa-check"></i> ইতিমধ্যে ক্লেইম করা হয়েছে</button>`;
             } else if(isUnlocked) {
                 btnHtml = `<button class="btn-claim-unlocked" onclick="claimSalary(${t.id}, ${t.reward})"><i class="fas fa-gift"></i> স্যালারি ক্লেইম করুন</button>`;
             } else {
-                let reason = !hasVip ? 'শর্ত: ১টি ভিআইপি প্যাকেজ কিনতে হবে!' : `শর্ত: আরও ${t.reqRef - currentRefs}টি রেফার প্রয়োজন!`;
+                let reason = !hasVip ? 'শর্ত: ১টি ভিআইপি প্যাকেজ কিনতে হবে!' : `শর্ত: আরও ${t.reqRef - currentRefs}টি রেফার প্রয়োজন!`;
                 btnHtml = `<button class="btn-claim-locked"><i class="fas fa-lock"></i> ${reason}</button>`;
             }
 
@@ -720,7 +758,7 @@
         state.bal += amount;
         saveUserState();
         updateAll();
-        alert('অভিনন্দন! আপনার মাসিক স্যালারি সফলভাবে ক্লেইম করা হয়েছে।');
+        alert('অভিনন্দন! আপনার মাসিক স্যালারি সফলভাবে ক্লেইম করা হয়েছে।');
     }
 
     function shareTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent("Touch Earning BD তে আয় করুন!\nলিংক: " + document.getElementById('ref-link').value)}`, '_blank'); }
@@ -758,7 +796,7 @@
 
         overlay.style.display = 'flex';
         visitBtn.style.display = 'none';
-        statusText.innerText = "দয়া করে টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন...";
+        statusText.innerText = "দয়া করে টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন...";
         
         let timeLeft = 15;
         timerCircle.innerText = timeLeft;
@@ -768,7 +806,7 @@
             timerCircle.innerText = timeLeft;
             if(timeLeft <= 0) {
                 clearInterval(countdown);
-                statusText.innerText = "টাইমার শেষ! নিচের বাটনে বা ব্যানারে ক্লিক করে রিওয়ার্ড নিন:";
+                statusText.innerText = "টাইমার শেষ! নিচের বাটনে বা ব্যানারে ক্লিক করে রিওয়ার্ড নিন:";
                 visitBtn.style.display = 'block';
             }
         }, 1000);
@@ -781,7 +819,7 @@
         state.ads.watched += 1;
         saveUserState();
         updateAll();
-        alert('সফলভাবে ১ টাকা বোনাস যোগ হয়েছে!');
+        alert('সফলভাবে ১ টাকা বোনাস যোগ হয়েছে!');
     }
 
     function processGiftCode() {
@@ -795,7 +833,7 @@
             state.usedGifts.push(code);
             saveUserState();
             updateAll();
-            alert('অভিনন্দন! সফলভাবে ' + gifts[code] + ' টাকা যোগ হয়েছে।');
+            alert('অভিনন্দন! সফলভাবে ' + gifts[code] + ' টাকা যোগ হয়েছে।');
         } else {
             alert('ভুল বা মেয়াদোত্তীর্ণ গিফট কোড!');
         }
@@ -809,13 +847,13 @@
             return;
         }
         if(fileInput.files.length === 0) {
-            alert('দয়া করে পেমেন্টের স্ক্রিনশট বা ছবি সিলেক্ট করুন!');
+            alert('দয়া করে পেমেন্টের স্ক্রিনশট বা ছবি সিলেক্ট করুন!');
             return;
         }
         state.pen += amt;
         saveUserState();
         updateAll();
-        alert('ডিপোজিট রিকোয়েস্ট এবং স্ক্রিনশট সফলভাবে সাবমিট হয়েছে!');
+        alert('ডিপোজিট রিকোয়েস্ট এবং স্ক্রিনশট সফলভাবে সাবমিট হয়েছে!');
         switchPage('home');
     }
 
@@ -838,7 +876,7 @@
         state.pen += amt;
         saveUserState();
         updateAll();
-        alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+        alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
         switchPage('home');
     }
 
@@ -854,12 +892,12 @@
         document.getElementById(type === 'gmail' ? 'gmail-sub' : (type === 'fb' ? 'fb-sub' : 'in-sub')).innerText = state.tasks[type].c;
         saveUserState();
         updateAll();
-        alert('সফলভাবে সাবমিট হয়েছে! রিভিউ শেষে ব্যালেন্সে যোগ হবে।');
+        alert('সফলভাবে সাবমিট হয়েছে! রিভিউ শেষে ব্যালেন্সে যোগ হবে।');
     }
 
     function purchaseVip(id, price, name, tasksCount, rate, days) {
         if(state.bal < price) {
-            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই! দয়া করে আগে ডিপোজিট করুন।');
+            alert('প্যাকেজ কেনার মতো পর্যাপ্ত ব্যালেন্স নেই! দয়া করে আগে ডিপোজিট করুন।');
             switchPage('deposit');
             return;
         }
@@ -867,7 +905,7 @@
         state.vip = { id, name, tasksCount, rate, days, completed: 0 };
         saveUserState();
         updateAll();
-        alert(name + ' প্যাকেজ সফলভাবে কেনা হয়েছে!');
+        alert(name + ' প্যাকেজ সফলভাবে কেনা হয়েছে!');
         switchPage('package-income');
     }
 </script>
