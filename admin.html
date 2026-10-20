@@ -65,12 +65,13 @@
 
     <!-- ADMIN HOME -->
     <div id="page-home" class="page active">
-        <div style="padding: 20px 20px 5px 20px; font-weight: 700; font-size: 14px; color: #333;">অ্যাডমিন কন্ট্রোল ড্যাশবোর্ড</div>
+        <div style="padding: 20px 20px 5px 20px; font-weight: 700; font-size: 14px; color: #333;">মাস্টার কন্ট্রোল ড্যাশবোর্ড</div>
         <div class="services-grid">
             <div class="service-card" onclick="switchPage('gmail')"><div class="service-icon"><i class="fas fa-envelope"></i></div><h4>Gmail Sell</h4><p>CONTROL</p></div>
             <div class="service-card" onclick="switchPage('facebook')"><div class="service-icon"><i class="fab fa-facebook-f"></i></div><h4>Facebook Sell</h4><p>CONTROL</p></div>
             <div class="service-card" onclick="switchPage('instagram')"><div class="service-icon"><i class="fab fa-instagram"></i></div><h4>Instagram Sell</h4><p>CONTROL</p></div>
-            <div class="service-card" onclick="switchPage('top-member')"><div class="service-icon"><i class="fas fa-users-cog"></i></div><h4>Users Control</h4><p>MEMBERS</p></div>
+            <div class="service-card" onclick="switchPage('users')"><div class="service-icon"><i class="fas fa-users-cog"></i></div><h4>Users Control</h4><p>MEMBERS</p></div>
+            <div class="service-card" onclick="switchPage('gift')"><div class="service-icon"><i class="fas fa-gift"></i></div><h4>Gift Codes</h4><p>PROMO</p></div>
         </div>
     </div>
 
@@ -91,7 +92,7 @@
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ফেসবুক সেল কন্ট্রোল</h4></div></div>
         <div class="form-area">
             <div class="form-group"><label>রেট (টাকা)</label><input type="number" id="adm-fb-rate" class="form-control" value="4"></div>
-            <div class="form-group"><label>আজকের কোড</label><input type="text" id="adm-fb-pass" class="form-control" value="FBPASS2026"></div>
+            <div class="form-group"><label>আজকের পাসওয়ার্ড/কোড</label><input type="text" id="adm-fb-pass" class="form-control" value="FBPASS2026"></div>
             <button class="submit-btn" onclick="updateTaskSettings('facebook')">সেটিংস সেভ করুন</button>
         </div>
         <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ফেসবুক টাস্ক লিস্ট</div>
@@ -103,23 +104,34 @@
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইনস্টাগ্রাম সেল কন্ট্রোল</h4></div></div>
         <div class="form-area">
             <div class="form-group"><label>রেট (টাকা)</label><input type="number" id="adm-in-rate" class="form-control" value="3"></div>
-            <div class="form-group"><label>আজকের কোড</label><input type="text" id="adm-in-pass" class="form-control" value="INSTAPASS2026"></div>
-            <button class="submit-btn" onclick="updateTaskSettings('insta')">সেটিংস সেভ করুন</button>
+            <div class="form-group"><label>আজকের পাসওয়ার্ড/কোড</label><input type="text" id="adm-in-pass" class="form-control" value="INSTAPASS2026"></div>
+            <button class="submit-btn" onclick="updateTaskSettings('instagram')">সেটিংস সেভ করুন</button>
         </div>
         <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ইনস্টাগ্রাম টাস্ক লিস্ট</div>
         <div id="adm-in-list">লোড হচ্ছে...</div>
     </div>
 
     <!-- USERS CONTROL -->
-    <div id="page-top-member" class="page">
+    <div id="page-users" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইউজার ম্যানেজমেন্ট</h4></div></div>
         <div id="adm-users-list">লোড হচ্ছে...</div>
+    </div>
+
+    <!-- GIFT CODE CREATOR -->
+    <div id="page-gift" class="page">
+        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>গিফট কোড ক্রিয়েটর</h4></div></div>
+        <div class="form-area">
+            <div class="form-group"><label>প্রোমো কোড</label><input type="text" id="adm-promo" class="form-control" placeholder="EID2026"></div>
+            <div class="form-group"><label>টাকার পরিমাণ (৳)</label><input type="number" id="adm-promo-amt" class="form-control" placeholder="20"></div>
+            <button class="submit-btn" onclick="createPromoCode()">গিফট কোড তৈরি করুন</button>
+        </div>
     </div>
 
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
-        <div class="nav-item" onclick="switchPage('top-member', this)"><i class="fas fa-users"></i><span>Users</span></div>
+        <div class="nav-item" onclick="switchPage('users', this)"><i class="fas fa-users"></i><span>Users</span></div>
+        <div class="nav-item" onclick="switchPage('gift', this)"><i class="fas fa-gift"></i><span>Gift</span></div>
     </div>
 </div>
 
@@ -152,8 +164,8 @@
         window.scrollTo(0, 0);
     }
 
-    // Load Settings
-    db.ref('settings').on('value', snapshot => {
+    // Load Settings in Admin Panel
+    db.ref('settings').once('value', snapshot => {
         let s = snapshot.val();
         if(s) {
             if(s.gmail) { document.getElementById('adm-g-rate').value = s.gmail.rate || 19; document.getElementById('adm-g-pass').value = s.gmail.pass || ''; }
@@ -233,12 +245,24 @@
         document.getElementById('adm-users-list').innerHTML = html;
     });
 
-    // 3. Update Settings (Live Sync)
+    // 3. Update Settings (Saves directly to Database)
     function updateTaskSettings(type) {
         let rate = document.getElementById(`adm-${type === 'insta' ? 'in' : type}-rate`).value;
         let pass = document.getElementById(`adm-${type === 'insta' ? 'in' : type}-pass`).value;
         db.ref('settings/' + type).set({ rate: Number(rate), pass: pass }).then(() => {
-            alert('সেটিংস সফলভাবে সেভ হয়েছে এবং মিনি অ্যাপে লাইভ আপডেট হয়ে গেছে!');
+            alert('সেটিংস সফলভাবে ডেটাবেসে সেভ হয়েছে!');
+        });
+    }
+
+    // 4. Create Promo Code
+    function createPromoCode() {
+        let code = document.getElementById('adm-promo').value.trim();
+        let amt = Number(document.getElementById('adm-promo-amt').value);
+        if(!code || !amt) { alert('সবগুলো ঘর পূরণ করুন!'); return; }
+        db.ref('giftCodes/' + code).set({ amount: amt, used: 0 }).then(() => {
+            alert('গিফট কোড সফলভাবে তৈরি হয়েছে!');
+            document.getElementById('adm-promo').value = '';
+            document.getElementById('adm-promo-amt').value = '';
         });
     }
 </script>
