@@ -82,8 +82,7 @@
     .rank-2 { background: #ef4444 !important; }
     .rank-3 { background: #f87171 !important; }
 
-    #ad-timer-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:none; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; padding:20px; }
-    .timer-circle { width: 100px; height: 100px; border: 5px solid #d32f2f; border-top: 5px solid white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: bold; margin-bottom: 20px; animation: spin 1s linear infinite; }
+    .red-badge { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-block; }
 
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #999; cursor: pointer; font-size: 10px; }
@@ -91,12 +90,6 @@
 </style>
 </head>
 <body>
-
-<div id="ad-timer-overlay">
-    <div class="timer-circle" id="timer-number">20</div>
-    <h3>বিজ্ঞাপন লোড হচ্ছে...</h3>
-    <p style="font-size:12px; color:#ccc; margin-top:10px;">দয়া করে ২০ সেকেন্ড অপেক্ষা করুন। পেজ কাটলে বা ব্যাক করলে রিওয়ার্ড পাবেন না!</p>
-</div>
 
 <div class="app-container">
     <div class="header">
@@ -224,11 +217,11 @@
         <div class="form-area" style="text-align:center; margin-top:20px;">
             <p style="font-size:13px; font-weight:bold; color:#d32f2f; margin-bottom:10px;">ডেইলি ক্যাপ লিমিট: <span id="ads-count-display">0</span> / 10</p>
             <p style="font-size:12px; margin-bottom:15px; color:#555;">প্রতি অ্যাড দেখার রেট: ৳0.50</p>
-            <button class="submit-btn" onclick="startWatchAdTimer()">▶ বিজ্ঞাপন দেখুন (20 Sec Timer)</button>
+            <button class="submit-btn" onclick="window.open('https://asiafilm.org/4/c3505769500a0f23788db9a499d62016', '_blank')">▶ বিজ্ঞাপন দেখুন</button>
         </div>
     </div>
 
-    <!-- PACKAGE INCOME PAGE -->
+    <!-- PACKAGE INCOME PAGE (VIP Ad Watcher) -->
     <div id="page-package-income" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>প্যাকেজ ইনকাম ও অ্যাক্টিভ ডিটেইলস</h4></div></div>
         <div style="padding:20px;">
@@ -290,10 +283,6 @@
             <p style="font-size:12px; margin-bottom:10px; color:#d32f2f; font-weight:bold;">বিকাশ পার্সোনাল নম্বর: <span id="dep-bkash-num">01330051841</span></p>
             <div class="form-group"><label>টাকার পরিমাণ (৳)</label><input type="number" id="dep-amount" class="form-control" placeholder="Amount"></div>
             <div class="form-group"><label>ট্রানজ্যাকশন আইডি (TrxID)</label><input type="text" id="dep-trx" class="form-control" placeholder="TrxID"></div>
-            <div class="form-group">
-                <label>পেমেন্ট স্ক্রিনশট (গ্যালারি থেকে সিলেক্ট করুন)</label>
-                <input type="file" id="dep-screenshot-file" class="form-control" accept="image/*" style="padding: 8px;">
-            </div>
             <button class="submit-btn" onclick="submitDeposit()">ডিপোজিট রিকোয়েস্ট পাঠান</button>
         </div>
     </div>
@@ -392,8 +381,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let state = { uid: '', userName: '', bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null };
-    let adInterval = null;
+    let state = { uid: '', userName: '', bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null, lastPackageAdDate: '' };
 
     document.addEventListener("DOMContentLoaded", () => {
         let tg = window.Telegram?.WebApp;
@@ -420,7 +408,7 @@
         userRef.once('value').then(snapshot => {
             let val = snapshot.val();
             if (!val) {
-                let initialData = { name: state.userName, bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null };
+                let initialData = { name: state.userName, bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null, lastPackageAdDate: '' };
                 userRef.set(initialData);
 
                 if (startParam && startParam !== state.uid) {
@@ -451,34 +439,11 @@
                 state.userName = val.name || state.userName;
                 state.claims = val.claims || {};
                 state.activePackage = val.activePackage || null;
+                state.lastPackageAdDate = val.lastPackageAdDate || '';
             }
             updateUI();
             checkClaimButtons();
             updatePackageIncomeView();
-        });
-
-        db.ref('settings').on('value', snapshot => {
-            let s = snapshot.val();
-            if(s) {
-                if(s.gmail) {
-                    window.currentGmailRate = Number(s.gmail.rate) || 19;
-                    document.getElementById('g-rate').innerText = '৳' + window.currentGmailRate + '.00';
-                    document.getElementById('g-pass').innerText = s.gmail.pass || 'DRAGONPOROMAX';
-                }
-                if(s.facebook) {
-                    window.currentFbRate = Number(s.facebook.rate) || 4;
-                    document.getElementById('fb-rate').innerText = '৳' + window.currentFbRate + '.00';
-                    document.getElementById('fb-pass').innerText = s.facebook.pass || 'FBPASS2026';
-                }
-                if(s.insta) {
-                    window.currentInRate = Number(s.insta.rate) || 3;
-                    document.getElementById('in-rate').innerText = '৳' + window.currentInRate + '.00';
-                    document.getElementById('in-pass').innerText = s.insta.pass || 'INSTAPASS2026';
-                }
-                if(s.bkash) {
-                    document.getElementById('dep-bkash-num').innerText = s.bkash;
-                }
-            }
         });
 
         loadUserHistory();
@@ -497,13 +462,25 @@
 
     function updatePackageIncomeView() {
         let box = document.getElementById('active-package-detailed-box');
+        let todayStr = new Date().toDateString();
+        let alreadyWatchedToday = (state.lastPackageAdDate === todayStr);
+
         if (state.activePackage) {
+            let adButtonHtml = alreadyWatchedToday 
+                ? `<span class="red-badge">আজকের মেয়াদ শেষ / অ্যাড দেখা সম্পন্ন</span>`
+                : `<button class="submit-btn" style="background:#dc2626; margin-top:10px;" onclick="watchPackageAd(${state.activePackage.daily})">অ্যাড দেখুন (৳${state.activePackage.daily})</button>`;
+
             box.innerHTML = `
-                <i class="fas fa-crown" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
-                <h4 style="font-size: 16px; color: #222; font-weight: 700; margin-bottom: 5px;">প্যাকেজ: ${state.activePackage.name}</h4>
-                <p style="font-size: 12px; color: #666; margin-bottom: 5px;">দৈনিক আয়: <b>৳${state.activePackage.daily}</b></p>
-                <p style="font-size: 12px; color: #666; margin-bottom: 15px;">মেয়াদ: <b>${state.activePackage.days || 30} দিন</b> বাকি</p>
-                <span style="background: #10b981; color: white; padding: 6px 15px; border-radius: 8px; font-size: 12px; font-weight: bold;">সক্রিয় আছে</span>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="text-align:left;">
+                        <h4 style="font-size: 15px; color: #222; font-weight: 700; margin-bottom: 3px;">প্যাকেজ: ${state.activePackage.name}</h4>
+                        <p style="font-size: 11px; color: #666;">দৈনিক আয়: ৳${state.activePackage.daily} | মেয়াদ: ${state.activePackage.days || 1} দিন বাকি</p>
+                    </div>
+                    <span style="background:#10b981; color:white; padding:4px 10px; border-radius:15px; font-size:11px; font-weight:bold;">সক্রিয় আছে</span>
+                </div>
+                <div style="margin-top:15px; text-align:center;">
+                    ${adButtonHtml}
+                </div>
             `;
         } else {
             box.innerHTML = `
@@ -513,6 +490,25 @@
                 <button class="submit-btn" onclick="switchPage('vip-packages')">প্যাকেজ কিনুন</button>
             `;
         }
+    }
+
+    function watchPackageAd(dailyIncome) {
+        let todayStr = new Date().toDateString();
+        if (state.lastPackageAdDate === todayStr) {
+            alert('আজকের প্যাকেজ অ্যাড দেখা শেষ! ২৪ ঘণ্টায় একবারই দেখা যায়।');
+            return;
+        }
+
+        let smartLink = "https://asiafilm.org/4/c3505769500a0f23788db9a499d62016";
+        window.open(smartLink, '_blank');
+
+        let newBal = state.bal + dailyIncome;
+        db.ref('users/' + state.uid).update({
+            bal: newBal,
+            lastPackageAdDate: todayStr
+        }).then(() => {
+            alert('অভিনন্দন! প্যাকেজ অ্যাড দেখার জন্য আপনার মূল ব্যালেন্সে ৳' + dailyIncome + ' যোগ হয়েছে।');
+        });
     }
 
     function checkClaimButtons() {
@@ -601,35 +597,6 @@
         });
     }
 
-    function startWatchAdTimer() {
-        if (state.adsCount >= 10) { alert('আজকের জন্য আপনার অ্যাড দেখার লিমিট (১০টি) শেষ!'); return; }
-
-        let overlay = document.getElementById('ad-timer-overlay');
-        let timerNum = document.getElementById('timer-number');
-        let timeLeft = 20;
-        timerNum.innerText = timeLeft;
-        overlay.style.display = 'flex';
-
-        let smartLink = "https://asiafilm.org/4/c3505769500a0f23788db9a499d62016";
-        window.open(smartLink, '_blank');
-
-        if(adInterval) clearInterval(adInterval);
-
-        adInterval = setInterval(() => {
-            timeLeft--;
-            timerNum.innerText = timeLeft;
-            if (timeLeft <= 0) {
-                clearInterval(adInterval);
-                overlay.style.display = 'none';
-                let newCount = state.adsCount + 1;
-                let newBal = state.bal + 0.50;
-                db.ref('users/' + state.uid).update({ bal: newBal, adsCount: newCount }).then(() => {
-                    alert('অভিনন্দন! সফলভাবে ২০ সেকেন্ড অপেক্ষা করার জন্য আপনার অ্যাকাউন্টে ৳০.৫০ যোগ হয়েছে।');
-                });
-            }
-        }, 1000);
-    }
-
     function claimGiftCode() {
         let code = document.getElementById('gift-code-input').value.trim();
         if (!code) { alert('গিফট কোড লিখুন!'); return; }
@@ -647,21 +614,14 @@
     function submitDeposit() {
         let amount = Number(document.getElementById('dep-amount').value);
         let trx = document.getElementById('dep-trx').value.trim();
-        let fileInput = document.getElementById('dep-screenshot-file');
-
         if (!amount || !trx) { alert('পরিমাণ এবং ট্রানজ্যাকশন আইডি দিন!'); return; }
-
-        let ssInfo = "No Screenshot";
-        if (fileInput.files && fileInput.files[0]) { ssInfo = "File: " + fileInput.files[0].name; }
-
         db.ref('deposits').push({
             uid: state.uid, userName: state.userName, amount: amount,
-            trx: trx, ss: ssInfo, status: 'Pending', time: new Date().toLocaleTimeString()
+            trx: trx, ss: 'Online Link', status: 'Pending', time: new Date().toLocaleTimeString()
         }).then(() => {
             alert('ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
             document.getElementById('dep-amount').value = '';
             document.getElementById('dep-trx').value = '';
-            fileInput.value = '';
         });
     }
 
@@ -683,46 +643,6 @@
         });
     }
 
-    function loadUserHistory() {
-        db.ref('tasks').on('value', snapshot => {
-            let tasks = snapshot.val();
-            let pendingHtml = '', approvedHtml = '';
-            let gSub = 0, fbSub = 0, inSub = 0;
-
-            if (tasks) {
-                Object.keys(tasks).forEach(key => {
-                    let t = tasks[key];
-                    if (t.uid === state.uid) {
-                        let statusClass = t.status === 'Approved' ? 'status-approved' : 'status-pending';
-                        let card = `
-                            <div class="history-card">
-                                <div class="history-info">
-                                    <h4>${t.type.toUpperCase()} - Acc: ${t.accId}</h4>
-                                    <p>Pass: ${t.pass} | 2FA: ${t.tfa}</p>
-                                    <span style="color:#d32f2f; font-weight:bold;">৳${t.rate}</span>
-                                </div>
-                                <div><span class="status-badge ${statusClass}">${t.status}</span></div>
-                            </div>
-                        `;
-                        if (t.status === 'Approved') approvedHtml += card;
-                        else pendingHtml += card;
-
-                        if (t.type === 'gmail') gSub++;
-                        if (t.type === 'facebook') fbSub++;
-                        if (t.type === 'instagram') inSub++;
-                    }
-                });
-            }
-
-            document.getElementById('user-pending-history').innerHTML = pendingHtml || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো পেন্ডিং টাস্ক নেই।</p>";
-            document.getElementById('user-approved-history').innerHTML = approvedHtml || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো অ্যাপ্রুভড টাস্ক নেই।</p>";
-
-            document.getElementById('gmail-sub').innerText = gSub;
-            document.getElementById('fb-sub').innerText = fbSub;
-            document.getElementById('in-sub').innerText = inSub;
-        });
-    }
-
     function loadVipPackages() {
         db.ref('vipPackages').on('value', snapshot => {
             let pkgs = snapshot.val();
@@ -737,9 +657,9 @@
                     <div style="background:white; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid #ffebee; display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <h4>${p.name}</h4>
-                            <p style="font-size:11px; color:#666;">মূল্য: ৳${p.price} | দৈনিক আয়: ৳${p.daily} | মেয়াদ: ${p.days || 30} দিন</p>
+                            <p style="font-size:11px; color:#666;">মূল্য: ৳${p.price} | দৈনিক আয়: ৳${p.daily} | মেয়াদ: ${p.days || 1} দিন</p>
                         </div>
-                        <button class="submit-btn" style="width:auto; padding:8px 15px;" onclick="buyVipPackage('${p.name}', ${p.price}, ${p.daily}, ${p.days || 30})">প্যাকেজ কিনুন</button>
+                        <button class="submit-btn" style="width:auto; padding:8px 15px;" onclick="buyVipPackage('${p.name}', ${p.price}, ${p.daily}, ${p.days || 1})">প্যাকেজ কিনুন</button>
                     </div>
                 `;
             });
@@ -755,7 +675,7 @@
         }
         let newBal = state.bal - price;
         let pkgData = { name: name, daily: daily, days: days };
-        db.ref('users/' + state.uid).update({ bal: newBal, activePackage: pkgData }).then(() => {
+        db.ref('users/' + state.uid).update({ bal: newBal, activePackage: pkgData, lastPackageAdDate: '' }).then(() => {
             alert('অভিনন্দন! সফলভাবে ' + name + ' প্যাকেজ কেনা হয়েছে।');
             switchPage('package-income');
         });
@@ -768,7 +688,6 @@
             let users = [];
             snapshot.forEach(child => { users.push(child.val()); });
             users.sort((a, b) => (b.ref || 0) - (a.ref || 0));
-            
             document.getElementById('total-member-count').innerText = users.length;
 
             let html = '';
@@ -776,7 +695,6 @@
                 let rank = i + 1;
                 let rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
                 let crown = rank <= 3 ? ' 👑' : '';
-
                 html += `
                     <div class="leaderboard-item">
                         <div style="display: flex; align-items: center;">
