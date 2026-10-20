@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin Dashboard - Touch Earning BD</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -64,20 +63,14 @@
         <div class="header-badge">LIVE</div>
     </div>
 
-    <!-- HOME PAGE (Matches App Options) -->
+    <!-- ADMIN HOME -->
     <div id="page-home" class="page active">
-        <div style="padding: 20px 20px 5px 20px; font-weight: 700; font-size: 14px; color: #333;">মাস্টার কন্ট্রোল ড্যাশবোর্ড</div>
+        <div style="padding: 20px 20px 5px 20px; font-weight: 700; font-size: 14px; color: #333;">অ্যাডমিন কন্ট্রোল ড্যাশবোর্ড</div>
         <div class="services-grid">
             <div class="service-card" onclick="switchPage('gmail')"><div class="service-icon"><i class="fas fa-envelope"></i></div><h4>Gmail Sell</h4><p>CONTROL</p></div>
             <div class="service-card" onclick="switchPage('facebook')"><div class="service-icon"><i class="fab fa-facebook-f"></i></div><h4>Facebook Sell</h4><p>CONTROL</p></div>
             <div class="service-card" onclick="switchPage('instagram')"><div class="service-icon"><i class="fab fa-instagram"></i></div><h4>Instagram Sell</h4><p>CONTROL</p></div>
-            <div class="service-card" onclick="switchPage('deposit')"><div class="service-icon"><i class="fas fa-wallet"></i></div><h4>Deposit Req</h4><p>MANAGE</p></div>
-            <div class="service-card" onclick="switchPage('wallet')"><div class="service-icon"><i class="fas fa-arrow-down"></i></div><h4>Withdraw Req</h4><p>PAYOUTS</p></div>
-            <div class="service-card" onclick="switchPage('top-member')"><div class="service-icon"><i class="fas fa-trophy"></i></div><h4>Users Control</h4><p>MEMBERS</p></div>
-            <div class="service-card" onclick="switchPage('gift-claim')"><div class="service-icon"><i class="fas fa-gift"></i></div><h4>Gift Codes</h4><p>PROMO</p></div>
-            <div class="service-card" onclick="switchPage('vip-packages')"><div class="service-icon" style="background:#f1c40f"><i class="fas fa-crown"></i></div><h4>VIP Packages</h4><p>PLANS</p></div>
-            <div class="service-card" onclick="switchPage('target-bonus')"><div class="service-icon"><i class="fas fa-bullseye"></i></div><h4>Target & Salary</h4><p>BONUS</p></div>
-            <div class="service-card" onclick="switchPage('watch-ads')"><div class="service-icon"><i class="fas fa-play"></i></div><h4>Watch Ads Logs</h4><p>VIEWS</p></div>
+            <div class="service-card" onclick="switchPage('top-member')"><div class="service-icon"><i class="fas fa-users-cog"></i></div><h4>Users Control</h4><p>MEMBERS</p></div>
         </div>
     </div>
 
@@ -89,7 +82,7 @@
             <div class="form-group"><label>আজকের পাসওয়ার্ড</label><input type="text" id="adm-g-pass" class="form-control" value="DRAGONPOROMAX"></div>
             <button class="submit-btn" onclick="updateTaskSettings('gmail')">সেটিংস সেভ করুন</button>
         </div>
-        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং জিমেইল টাস্ক</div>
+        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং জিমেইল টাস্ক লিস্ট</div>
         <div id="adm-gmail-list">লোড হচ্ছে...</div>
     </div>
 
@@ -98,10 +91,10 @@
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ফেসবুক সেল কন্ট্রোল</h4></div></div>
         <div class="form-area">
             <div class="form-group"><label>রেট (টাকা)</label><input type="number" id="adm-fb-rate" class="form-control" value="4"></div>
-            <div class="form-group"><label>আজকের পাসওয়ার্ড/কোড</label><input type="text" id="adm-fb-pass" class="form-control" value="FBPASS2026"></div>
+            <div class="form-group"><label>আজকের কোড</label><input type="text" id="adm-fb-pass" class="form-control" value="FBPASS2026"></div>
             <button class="submit-btn" onclick="updateTaskSettings('facebook')">সেটিংস সেভ করুন</button>
         </div>
-        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ফেসবুক টাস্ক</div>
+        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ফেসবুক টাস্ক লিস্ট</div>
         <div id="adm-fb-list">লোড হচ্ছে...</div>
     </div>
 
@@ -110,73 +103,23 @@
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইনস্টাগ্রাম সেল কন্ট্রোল</h4></div></div>
         <div class="form-area">
             <div class="form-group"><label>রেট (টাকা)</label><input type="number" id="adm-in-rate" class="form-control" value="3"></div>
-            <div class="form-group"><label>আজকের পাসওয়ার্ড/কোড</label><input type="text" id="adm-in-pass" class="form-control" value="INSTAPASS2026"></div>
+            <div class="form-group"><label>আজকের কোড</label><input type="text" id="adm-in-pass" class="form-control" value="INSTAPASS2026"></div>
             <button class="submit-btn" onclick="updateTaskSettings('insta')">সেটিংস সেভ করুন</button>
         </div>
-        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ইনস্টাগ্রাম টাস্ক</div>
+        <div style="padding:0 20px 10px; font-weight:bold; font-size:12px;">পেন্ডিং ইনস্টাগ্রাম টাস্ক লিস্ট</div>
         <div id="adm-in-list">লোড হচ্ছে...</div>
-    </div>
-
-    <!-- DEPOSIT MANAGE -->
-    <div id="page-deposit" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ডিপোজিট রিকোয়েস্ট</h4></div></div>
-        <div id="adm-deposit-list">লোড হচ্ছে...</div>
-    </div>
-
-    <!-- WITHDRAW MANAGE -->
-    <div id="page-wallet" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>উইথড্র রিকোয়েস্ট</h4></div></div>
-        <div id="adm-withdraw-list">লোড হচ্ছে...</div>
     </div>
 
     <!-- USERS CONTROL -->
     <div id="page-top-member" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইউজার কন্ট্রোল ও ব্যালেন্স</h4></div></div>
+        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ইউজার ম্যানেজমেন্ট</h4></div></div>
         <div id="adm-users-list">লোড হচ্ছে...</div>
-    </div>
-
-    <!-- GIFT CODE CREATOR -->
-    <div id="page-gift-claim" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>গিফট কোড ক্রিয়েটর</h4></div></div>
-        <div class="form-area">
-            <div class="form-group"><label>প্রোমো কোড</label><input type="text" id="adm-promo" class="form-control" placeholder="EID2026"></div>
-            <div class="form-group"><label>টাকার পরিমাণ (৳)</label><input type="number" id="adm-promo-amt" class="form-control" placeholder="20"></div>
-            <button class="submit-btn" onclick="createPromoCode()">গিফট কোড তৈরি করুন</button>
-        </div>
-    </div>
-
-    <!-- VIP PACKAGES -->
-    <div id="page-vip-packages" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ভিআইপি প্যাকেজ কন্ট্রোল</h4></div></div>
-        <div class="form-area">
-            <div class="form-group"><label>প্যাকেজের নাম</label><input type="text" id="adm-vip-name" class="form-control" placeholder="VIP-1"></div>
-            <div class="form-group"><label>মূল্য (৳)</label><input type="number" id="adm-vip-price" class="form-control" placeholder="500"></div>
-            <div class="form-group"><label>দৈনিক আয় (৳)</label><input type="number" id="adm-vip-daily" class="form-control" placeholder="50"></div>
-            <button class="submit-btn" onclick="addVipPackage()">প্যাকেজ যোগ করুন</button>
-        </div>
-    </div>
-
-    <!-- TARGET & SALARY -->
-    <div id="page-target-bonus" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>টার্গেট ও স্যালারি</h4></div></div>
-        <div class="form-area">
-            <div class="form-group"><label>টার্গেট বা স্যালারি বিবরণ</label><input type="text" id="adm-target-title" class="form-control" placeholder="৫ রেফার স্যালারি ৳৫০"></div>
-            <button class="submit-btn" onclick="addTargetBonus()">টার্গেট যোগ করুন</button>
-        </div>
-    </div>
-
-    <!-- WATCH ADS LOGS -->
-    <div id="page-watch-ads" class="page">
-        <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>অ্যাড দেখার লগ</h4></div></div>
-        <div style="padding:20px; font-size:12px; color:#666;">ইউজারদের অ্যাড দেখার হিস্ট্রি এখানে সংরক্ষিত হবে।</div>
     </div>
 
     <!-- BOTTOM NAV -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-home"><span>Home</span></i></div>
-        <div class="nav-item" onclick="switchPage('top-member', this)"><i class="fas fa-users"><span>Users</span></i></div>
-        <div class="nav-item" onclick="switchPage('deposit', this)"><i class="fas fa-wallet"><span>Deposit</span></i></div>
-        <div class="nav-item" onclick="switchPage('wallet', this)"><i class="fas fa-money-bill-wave"><span>Withdraw</span></i></div>
+        <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="nav-item" onclick="switchPage('top-member', this)"><i class="fas fa-users"></i><span>Users</span></div>
     </div>
 </div>
 
@@ -219,14 +162,14 @@
         }
     });
 
-    // 1. Live Tasks (Gmail, FB, Insta)
+    // 1. Live Tasks
     db.ref('tasks').on('value', snapshot => {
         let tasks = snapshot.val();
         let gHtml = '', fbHtml = '', inHtml = '';
         if (!tasks) {
-            document.getElementById('adm-gmail-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো পেন্ডিং টাস্ক নেই।</p>";
-            document.getElementById('adm-fb-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো পেন্ডিং টাস্ক নেই।</p>";
-            document.getElementById('adm-in-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো পেন্ডিং টাস্ক নেই।</p>";
+            document.getElementById('adm-gmail-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো টাস্ক নেই।</p>";
+            document.getElementById('adm-fb-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো টাস্ক নেই।</p>";
+            document.getElementById('adm-in-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো টাস্ক নেই।</p>";
             return;
         }
 
@@ -264,67 +207,7 @@
         });
     }
 
-    // 2. Deposit Requests
-    db.ref('deposits').on('value', snapshot => {
-        let deps = snapshot.val();
-        let html = '';
-        if (!deps) {
-            document.getElementById('adm-deposit-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো ডিপোজিট রিকোয়েস্ট নেই।</p>";
-            return;
-        }
-        Object.keys(deps).forEach(key => {
-            let d = deps[key];
-            if (d.status === 'Pending') {
-                html += `
-                    <div class="admin-card">
-                        <div class="admin-card-info">
-                            <h4>${d.userName} (#${d.uid})</h4>
-                            <p>পরিমাণ: <b>৳${d.amount}</b> | সময়: ${d.time}</p>
-                        </div>
-                        <button class="btn-sm" onclick="approveDeposit('${key}', '${d.uid}', ${d.amount})">অ্যাপ্রুভ</button>
-                    </div>
-                `;
-            }
-        });
-        document.getElementById('adm-deposit-list').innerHTML = html || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো ডিপোজিট রিকোয়েস্ট নেই।</p>";
-    });
-
-    function approveDeposit(key, uid, amt) {
-        db.ref('deposits/' + key).update({ status: 'Approved' }).then(() => {
-            let uRef = db.ref('users/' + uid);
-            uRef.once('value').then(snap => {
-                let u = snap.val() || { bal: 0 };
-                uRef.update({ bal: (u.bal || 0) + amt }).then(() => alert('ডিপোজিট অ্যাপ্রুভ ও ব্যালেন্স যোগ হয়েছে!'));
-            });
-        });
-    }
-
-    // 3. Withdraw Requests
-    db.ref('withdraws').on('value', snapshot => {
-        let wList = snapshot.val();
-        let html = '';
-        if (!wList) {
-            document.getElementById('adm-withdraw-list').innerHTML = "<p style='text-align:center; color:#666; font-size:11px;'>কোনো উইথড্র রিকোয়েস্ট নেই।</p>";
-            return;
-        }
-        Object.keys(wList).forEach(key => {
-            let w = wList[key];
-            if (w.status === 'Pending') {
-                html += `
-                    <div class="admin-card">
-                        <div class="admin-card-info">
-                            <h4>${w.userName} (#${w.uid})</h4>
-                            <p>টাকা: <b>৳${w.amount}</b> | নম্বর: ${w.number}</p>
-                        </div>
-                        <button class="btn-sm btn-blue" onclick="db.ref('withdraws/${key}').update({status: 'Paid'}).then(()=>alert('উইথড্র পেইড করা হয়েছে!'))">পেইড করুন</button>
-                    </div>
-                `;
-            }
-        });
-        document.getElementById('adm-withdraw-list').innerHTML = html || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো উইথড্র রিকোয়েস্ট নেই।</p>";
-    });
-
-    // 4. Users Control & Delete
+    // 2. Users Management
     db.ref('users').on('value', snapshot => {
         let users = snapshot.val();
         let html = '';
@@ -342,7 +225,7 @@
                     </div>
                     <div>
                         <button class="btn-sm btn-blue" onclick="let b = prompt('ব্যালেন্স যোগ বা বিয়োগ করুন (- দিয়ে মাইনাস):'); if(b) db.ref('users/${uid}/bal').set(((${u.bal || 0}) + Number(b)));">এডিট</button>
-                        <button class="btn-sm btn-red" onclick="if(confirm('সত্যিই মুছে ফেলতে চান?')) db.ref('users/${uid}').remove().then(()=>alert('ইউজার ডিলিট হয়েছে!'));">ডিলিট</button>
+                        <button class="btn-sm btn-red" onclick="if(confirm('মুছে ফেলতে চান?')) db.ref('users/${uid}').remove().then(()=>alert('ইউজার ডিলিট হয়েছে!'));">ডিলিট</button>
                     </div>
                 </div>
             `;
@@ -350,37 +233,13 @@
         document.getElementById('adm-users-list').innerHTML = html;
     });
 
-    // 5. Update Task Settings (Rate & Password)
+    // 3. Update Settings (Live Sync)
     function updateTaskSettings(type) {
         let rate = document.getElementById(`adm-${type === 'insta' ? 'in' : type}-rate`).value;
         let pass = document.getElementById(`adm-${type === 'insta' ? 'in' : type}-pass`).value;
-        db.ref('settings/' + type).set({ rate: Number(rate), pass: pass }).then(() => alert('সেটিংস সফলভাবে আপডেট হয়েছে এবং মিনি অ্যাপে লাইভ সিংক হয়ে গেছে!'));
-    }
-
-    // 6. Admin Additions (Promo, VIP, Target)
-    function createPromoCode() {
-        let code = document.getElementById('adm-promo').value.trim();
-        let amt = Number(document.getElementById('adm-promo-amt').value);
-        if(!code || !amt) { alert('সবগুলো ঘর পূরণ করুন!'); return; }
-        db.ref('giftCodes/' + code).set({ amount: amt, used: 0 }).then(() => {
-            alert('গিফট কোড সফলভাবে তৈরি হয়েছে!');
-            document.getElementById('adm-promo').value = '';
-            document.getElementById('adm-promo-amt').value = '';
+        db.ref('settings/' + type).set({ rate: Number(rate), pass: pass }).then(() => {
+            alert('সেটিংস সফলভাবে সেভ হয়েছে এবং মিনি অ্যাপে লাইভ আপডেট হয়ে গেছে!');
         });
-    }
-
-    function addVipPackage() {
-        let name = document.getElementById('adm-vip-name').value;
-        let price = document.getElementById('adm-vip-price').value;
-        let daily = document.getElementById('adm-vip-daily').value;
-        if(!name || !price) { alert('সবগুলো ঘর পূরণ করুন!'); return; }
-        db.ref('vipPackages').push({ name, price, daily }).then(() => alert('ভিআইপি প্যাকেজ যুক্ত হয়েছে!'));
-    }
-
-    function addTargetBonus() {
-        let title = document.getElementById('adm-target-title').value;
-        if(!title) { alert('টার্গেট বিবরণ লিখুন!'); return; }
-        db.ref('salaryTargets').push({ title }).then(() => alert('টার্গেট যোগ হয়েছে!'));
     }
 </script>
 </body>
