@@ -229,24 +229,30 @@
             updateUI();
         });
 
-        // অ্যাডমিন প্যানেল থেকে লাইভ রেট ও পাসওয়ার্ড সিংক করা
+        // অ্যাডমিন প্যানেল থেকে লাইভ রেট ও পাসওয়ার্ড সিংক করার লজিক
         db.ref('settings').on('value', snapshot => {
             let s = snapshot.val();
             if(s) {
                 if(s.gmail) {
                     window.currentGmailRate = s.gmail.rate || 19;
-                    document.getElementById('g-rate').innerText = '৳' + window.currentGmailRate + '.00';
-                    document.getElementById('g-pass').innerText = s.gmail.pass || 'DRAGONPOROMAX';
+                    let gRateEl = document.getElementById('g-rate');
+                    if(gRateEl) gRateEl.innerText = '৳' + window.currentGmailRate + '.00';
+                    let gPassEl = document.getElementById('g-pass');
+                    if(gPassEl) gPassEl.innerText = s.gmail.pass || 'DRAGONPOROMAX';
                 }
                 if(s.facebook) {
                     window.currentFbRate = s.facebook.rate || 4;
-                    document.getElementById('fb-rate').innerText = '৳' + window.currentFbRate + '.00';
-                    document.getElementById('fb-pass').innerText = s.facebook.pass || 'FBPASS2026';
+                    let fbRateEl = document.getElementById('fb-rate');
+                    if(fbRateEl) fbRateEl.innerText = '৳' + window.currentFbRate + '.00';
+                    let fbPassEl = document.getElementById('fb-pass');
+                    if(fbPassEl) fbPassEl.innerText = s.facebook.pass || 'FBPASS2026';
                 }
                 if(s.insta) {
                     window.currentInRate = s.insta.rate || 3;
-                    document.getElementById('in-rate').innerText = '৳' + window.currentInRate + '.00';
-                    document.getElementById('in-pass').innerText = s.insta.pass || 'INSTAPASS2026';
+                    let inRateEl = document.getElementById('in-rate');
+                    if(inRateEl) inRateEl.innerText = '৳' + window.currentInRate + '.00';
+                    let inPassEl = document.getElementById('in-pass');
+                    if(inPassEl) inPassEl.innerText = s.insta.pass || 'INSTAPASS2026';
                 }
             }
         });
