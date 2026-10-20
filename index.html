@@ -229,30 +229,24 @@
             updateUI();
         });
 
-        // অ্যাডমিন প্যানেল থেকে লাইভ রেট ও পাসওয়ার্ড সিংক করার লজিক
+        // লাইভ সেটিংস সিংক
         db.ref('settings').on('value', snapshot => {
             let s = snapshot.val();
             if(s) {
                 if(s.gmail) {
                     window.currentGmailRate = s.gmail.rate || 19;
-                    let gRateEl = document.getElementById('g-rate');
-                    if(gRateEl) gRateEl.innerText = '৳' + window.currentGmailRate + '.00';
-                    let gPassEl = document.getElementById('g-pass');
-                    if(gPassEl) gPassEl.innerText = s.gmail.pass || 'DRAGONPOROMAX';
+                    let rEl = document.getElementById('g-rate'); if(rEl) rEl.innerText = '৳' + window.currentGmailRate + '.00';
+                    let pEl = document.getElementById('g-pass'); if(pEl) pEl.innerText = s.gmail.pass || 'DRAGONPOROMAX';
                 }
                 if(s.facebook) {
                     window.currentFbRate = s.facebook.rate || 4;
-                    let fbRateEl = document.getElementById('fb-rate');
-                    if(fbRateEl) fbRateEl.innerText = '৳' + window.currentFbRate + '.00';
-                    let fbPassEl = document.getElementById('fb-pass');
-                    if(fbPassEl) fbPassEl.innerText = s.facebook.pass || 'FBPASS2026';
+                    let rEl = document.getElementById('fb-rate'); if(rEl) rEl.innerText = '৳' + window.currentFbRate + '.00';
+                    let pEl = document.getElementById('fb-pass'); if(pEl) pEl.innerText = s.facebook.pass || 'FBPASS2026';
                 }
                 if(s.insta) {
                     window.currentInRate = s.insta.rate || 3;
-                    let inRateEl = document.getElementById('in-rate');
-                    if(inRateEl) inRateEl.innerText = '৳' + window.currentInRate + '.00';
-                    let inPassEl = document.getElementById('in-pass');
-                    if(inPassEl) inPassEl.innerText = s.insta.pass || 'INSTAPASS2026';
+                    let rEl = document.getElementById('in-rate'); if(rEl) rEl.innerText = '৳' + window.currentInRate + '.00';
+                    let pEl = document.getElementById('in-pass'); if(pEl) pEl.innerText = s.insta.pass || 'INSTAPASS2026';
                 }
             }
         });
@@ -288,7 +282,7 @@
             status: 'Pending',
             time: new Date().toLocaleString()
         }).then(() => {
-            alert('সফলভাবে সাবমিট হয়েছে! অ্যাডমিন প্যানেলে পেন্ডিং লিস্টে গেছে।');
+            alert('সফলভাবে সাবমিট হয়েছে!');
             document.getElementById(idField).value = '';
             document.getElementById(passField).value = '';
         });
