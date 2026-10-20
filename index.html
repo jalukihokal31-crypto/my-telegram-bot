@@ -60,17 +60,9 @@
     .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #999; cursor: pointer; }
     .nav-item.active { color: #d32f2f; }
-    #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:999999; display:flex; flex-direction:column; justify-content:center; align-items:center; }
-    .spinner { border: 4px solid #ffebee; border-top: 4px solid #d32f2f; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom:15px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-
-<div id="loading-overlay">
-    <div class="spinner"></div>
-    <h3 style="color:#d32f2f; font-size:14px;">লোড হচ্ছে...</h3>
-</div>
 
 <div class="app-container">
     <div class="header">
@@ -225,26 +217,25 @@
             } else {
                 userRef.set({ name: state.userName, bal: 0, ref: 0 });
             }
-            document.getElementById('loading-overlay').style.display = 'none';
             updateUI();
         });
 
-        // লাইভ সেটিংস সিংক
+        // লাইভ সেটিংস সিংক (অ্যাডমিন প্যানেল থেকে রেট ও পাসওয়ার্ড পরিবর্তন করলে সাথে সাথে আপডেট হবে)
         db.ref('settings').on('value', snapshot => {
             let s = snapshot.val();
             if(s) {
                 if(s.gmail) {
-                    window.currentGmailRate = s.gmail.rate || 19;
+                    window.currentGmailRate = Number(s.gmail.rate) || 19;
                     let rEl = document.getElementById('g-rate'); if(rEl) rEl.innerText = '৳' + window.currentGmailRate + '.00';
                     let pEl = document.getElementById('g-pass'); if(pEl) pEl.innerText = s.gmail.pass || 'DRAGONPOROMAX';
                 }
                 if(s.facebook) {
-                    window.currentFbRate = s.facebook.rate || 4;
+                    window.currentFbRate = Number(s.facebook.rate) || 4;
                     let rEl = document.getElementById('fb-rate'); if(rEl) rEl.innerText = '৳' + window.currentFbRate + '.00';
                     let pEl = document.getElementById('fb-pass'); if(pEl) pEl.innerText = s.facebook.pass || 'FBPASS2026';
                 }
                 if(s.insta) {
-                    window.currentInRate = s.insta.rate || 3;
+                    window.currentInRate = Number(s.insta.rate) || 3;
                     let rEl = document.getElementById('in-rate'); if(rEl) rEl.innerText = '৳' + window.currentInRate + '.00';
                     let pEl = document.getElementById('in-pass'); if(pEl) pEl.innerText = s.insta.pass || 'INSTAPASS2026';
                 }
