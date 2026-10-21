@@ -251,7 +251,7 @@
         </div>
     </div>
 
-    <!-- PACKAGE INCOME PAGE (Multi-VIP Dynamic Ad Counter & Level View) -->
+    <!-- PACKAGE INCOME PAGE (Dynamic VIP Ads Counter & Smart Link) -->
     <div id="page-package-income" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>প্যাকেজ ইনকাম ও অ্যাড টাস্ক</h4></div></div>
         <div style="padding:20px;" id="package-income-view">
@@ -357,7 +357,7 @@
         </div>
     </div>
 
-    <!-- VIP PACKAGES (Matching Screenshot Exactly with "উপার্জিত ব্যালেন্স থেকে ডিপোজিট করুন" & Dynamic Yellow/Green states) -->
+    <!-- VIP PACKAGES -->
     <div id="page-vip-packages" class="page">
         <div class="sub-header">
             <button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button>
@@ -578,7 +578,7 @@
         });
     }
 
-    // Package Income View with Level & Ad Counter
+    // VIP Package Income View with Dynamic Level (VIP 1, VIP 2) & Ad Counter
     function updatePackageIncomeView() {
         let box = document.getElementById('package-income-view');
         let pkgs = state.activePackages || [];
@@ -599,12 +599,12 @@
         let html = `<h4 style="font-size:14px; font-weight:700; margin-bottom:15px; color:#d32f2f;">আপনার সক্রিয় ভিআইপি প্যাকেজসমূহ</h4>`;
 
         pkgs.forEach((pkg, index) => {
-            let totalAds = pkg.dailyAds || 1;
+            let totalAds = pkg.dailyAds || 2;
             let watched = (pkg.lastAdDate === todayStr) ? (pkg.watchedToday || 0) : 0;
             let isComplete = watched >= totalAds;
 
             let btnHtml = isComplete 
-                ? `<span class="red-badge">আজকের অ্যাড দেখা কমপ্লিট (${watched}/${totalAds})</span>`
+                ? `<span class="red-badge">আজকের অ্যাড দেখা কমপ্লিট (${watched}/${totalAds}), ২৪ ঘণ্টা পর আবার আসবেন।</span>`
                 : `<button class="submit-btn" style="background:#dc2626; margin-top:10px;" onclick="startMultiPackageAdTimer(${index}, ${pkg.daily}, ${totalAds})">▶ অ্যাড দেখুন (${watched}/${totalAds}) - ৳${pkg.daily}</button>`;
 
             html += `
@@ -613,7 +613,7 @@
                         <h4 style="font-size:14px; font-weight:700; color:#222;"><i class="fas fa-crown" style="color:#f59e0b;"></i> ${pkg.name}</h4>
                         <span style="background:#10b981; color:white; padding:3px 8px; border-radius:10px; font-size:10px; font-weight:bold;">সক্রিয়</span>
                     </div>
-                    <p style="font-size:11px; color:#666; margin-top:5px;">প্রতি অ্যাড রেট: ৳${pkg.daily} | দৈনিক কাজ: ${totalAds}টি</p>
+                    <p style="font-size:11px; color:#666; margin-top:5px;">প্রতি অ্যাড রেট: ৳${pkg.daily} | টাস্ক: ${watched} / ${totalAds}</p>
                     <div style="margin-top:10px; text-align:center;">${btnHtml}</div>
                 </div>
             `;
@@ -664,6 +664,11 @@
     }
 
     function buyVipPackage(name, price, daily, days) {
+        if (state.bal < price) {
+            alert('পর্যাপ্ত ব্যালেন্স নেই! ডিপোজিট পেজে নিয়ে যাওয়া হচ্ছে।');
+            switchPage('deposit');
+            return;
+        }
         if (state.vipPendingList.includes(name)) {
             alert('আপনার এই প্যাকেজের রিকোয়েস্ট ইতিমধ্যে পেন্ডিং আছে!');
             return;
@@ -724,10 +729,14 @@
                         btnClass += "btn-pending";
                         btnText = `<i class="fas fa-clock"></i> পেন্ডিং`;
                         isDisabled = true;
-                    } else {
+                    } else if (state.bal >= price) {
                         btnClass += "btn-buy";
                         btnText = `উপার্জিত ব্যালেন্স থেকে ডিপোজিট করুন`;
                         btnAction = `onclick="buyVipPackage('${p.name}', ${price}, ${daily}, ${days})"`;
+                    } else {
+                        btnClass += "btn-buy";
+                        btnText = `উপার্জিত ব্যালেন্স থেকে ডিপোজিট করুন`;
+                        btnAction = `onclick="switchPage('deposit')"`;
                     }
 
                     html += `
@@ -757,7 +766,7 @@
                                 </div>
                                 <div class="sub-stat-box">
                                     <span>দৈনিক কাজ</span>
-                                    <b>১টি অ্যাড</b>
+                                    <b>২টি অ্যাড</b>
                                 </div>
                                 <div class="sub-stat-box">
                                     <span>প্রতি অ্যাড রেট</span>
@@ -893,7 +902,6 @@
             document.getElementById('in-sub').innerText = inSub;
         });
 
-        // Deposit History
         db.ref('deposits').on('value', snapshot => {
             let deps = snapshot.val();
             let html = '';
@@ -918,7 +926,6 @@
             if(depHist) depHist.innerHTML = html || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো ডিপোজিট হিস্ট্রি নেই।</p>";
         });
 
-        // Withdraw History
         db.ref('withdraws').on('value', snapshot => {
             let list = snapshot.val();
             let html = '';
