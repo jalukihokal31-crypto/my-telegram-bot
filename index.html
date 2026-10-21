@@ -82,6 +82,7 @@
     .rank-2 { background: #ef4444 !important; }
     .rank-3 { background: #f87171 !important; }
 
+    /* VIP Card Styling matching user specification */
     .vip-card { background: #fff; margin: 0 20px 15px 20px; border-radius: 20px; padding: 15px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: relative; }
     .vip-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .vip-badge-title { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 800; color: #0f172a; }
@@ -97,12 +98,11 @@
     .sub-stat-box span { font-size: 9px; color: #64748b; display: block; font-weight: 600; }
     .sub-stat-box b { font-size: 12px; color: #0f172a; font-weight: 700; margin-top: 2px; display: block; }
 
-    .action-status-btn { width: 100%; padding: 12px; border-radius: 14px; font-size: 12px; font-weight: 700; text-align: center; border: none; cursor: pointer; }
+    .action-status-btn { width: 100%; padding: 12px; border-radius: 14px; font-size: 12px; font-weight: 700; text-align: center; border: none; cursor: pointer; transition: 0.2s; }
     .btn-buy { background: #10b981; color: white; }
     .btn-pending { background: #fef08a !important; color: #854d0e !important; border: 1px solid #fde047 !important; cursor: default; }
     .btn-active { background: #d1fae5 !important; color: #065f46 !important; border: 1px solid #a7f3d0 !important; cursor: default; }
-
-    .red-badge { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .btn-insufficient { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
 
     #ad-timer-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:none; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; padding:20px; }
     .timer-circle { width: 100px; height: 100px; border: 5px solid #d32f2f; border-top: 5px solid white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: bold; margin-bottom: 20px; animation: spin 1s linear infinite; }
@@ -157,7 +157,7 @@
             <div class="service-card" onclick="switchPage('vip-packages')"><div class="service-icon" style="background:#f1c40f"><i class="fas fa-crown"></i></div><h4>VIP Packages</h4><p>DAILY INCOME</p></div>
             <div class="service-card" onclick="switchPage('package-income')"><div class="service-icon" style="background:#10b981"><i class="fas fa-chart-line"></i></div><h4>Package Income</h4><p>ACTIVE DETAILS</p></div>
             <div class="service-card" onclick="switchPage('monthly-salary')"><div class="service-icon"><i class="fas fa-calendar-check"></i></div><h4>Monthly Salary</h4><p>CLAIM BONUS</p></div>
-            <div class="service-card" onclick="switchPage('target-bonus')"><div class="service-icon" style="background:#3b82f6"><i class="fas fa-bullseye"></i></div><h4>Target Bonus</h4><p>BIG REWARDS</p></div>
+            <div class="service-card" onclick="switchPage('target-bonus')"><div class="service-icon"><i class="fas fa-bullseye"></i></div><h4>Target Bonus</h4><p>BIG REWARDS</p></div>
             <div class="service-card" onclick="switchPage('gift-claim')"><div class="service-icon"><i class="fas fa-gift"></i></div><h4>Gift Claim</h4><p>PROMO CODE</p></div>
             <div class="service-card" onclick="switchPage('top-member')"><div class="service-icon"><i class="fas fa-trophy"></i></div><h4>Top Member</h4><p>LEADERBOARD</p></div>
             <div class="service-card" onclick="switchPage('refer-friends')"><div class="service-icon"><i class="fas fa-users"></i></div><h4>Refer Friends</h4><p>LIFETIME BONUS</p></div>
@@ -251,7 +251,7 @@
         </div>
     </div>
 
-    <!-- PACKAGE INCOME PAGE (Multi-VIP Ad Watcher) -->
+    <!-- PACKAGE INCOME PAGE (Multi-VIP Dynamic Ad Counter & Level View) -->
     <div id="page-package-income" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>প্যাকেজ ইনকাম ও অ্যাড টাস্ক</h4></div></div>
         <div style="padding:20px;" id="package-income-view">
@@ -274,6 +274,14 @@
                 <div class="claim-info"><h4>১০ জন রেফার স্যালারি</h4><p>বোনাস: ৳১০০</p></div>
                 <button class="claim-btn disabled" id="salary-btn-10" onclick="claimSalary(10, 100, 'salary10')">শর্ত পূরণ হয়নি</button>
             </div>
+            <div class="claim-box">
+                <div class="claim-info"><h4>১৫ জন রেফার স্যালারি</h4><p>বোনাস: ৳১৫০</p></div>
+                <button class="claim-btn disabled" id="salary-btn-15" onclick="claimSalary(15, 150, 'salary15')">শর্ত পূরণ হয়নি</button>
+            </div>
+            <div class="claim-box">
+                <div class="claim-info"><h4>২০ জন রেফার স্যালারি</h4><p>বোনাস: ৳২৫০</p></div>
+                <button class="claim-btn disabled" id="salary-btn-20" onclick="claimSalary(20, 250, 'salary20')">শর্ত পূরণ হয়নি</button>
+            </div>
         </div>
     </div>
 
@@ -284,6 +292,14 @@
             <div class="claim-box">
                 <div class="claim-info"><h4>১০০ জন রেফার টার্গেট</h4><p>বোনাস: ৳১,০০০</p></div>
                 <button class="claim-btn disabled" id="target-btn-100" onclick="claimTarget(100, 1000, 'target100')">শর্ত পূরণ হয়নি</button>
+            </div>
+            <div class="claim-box">
+                <div class="claim-info"><h4>২০০ জন রেফার টার্গেট</h4><p>বোনাস: ৳৩,০০০</p></div>
+                <button class="claim-btn disabled" id="target-btn-200" onclick="claimTarget(200, 3000, 'target200')">শর্ত পূরণ হয়নি</button>
+            </div>
+            <div class="claim-box">
+                <div class="claim-info"><h4>৩০০ জন রেফার টার্গেট</h4><p>বোনাস: ৳৫,০০০</p></div>
+                <button class="claim-btn disabled" id="target-btn-300" onclick="claimTarget(300, 5000, 'target300')">শর্ত পূরণ হয়নি</button>
             </div>
         </div>
     </div>
@@ -341,7 +357,7 @@
         </div>
     </div>
 
-    <!-- VIP PACKAGES -->
+    <!-- VIP PACKAGES (Matching Screenshot Exactly with "উপার্জিত ব্যালেন্স থেকে ডিপোজিট করুন" & Dynamic Yellow/Green states) -->
     <div id="page-vip-packages" class="page">
         <div class="sub-header">
             <button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button>
@@ -375,7 +391,7 @@
                 </div>
                 <div style="flex: 1; background: #fff; border: 1px solid #ffebee; padding: 10px; border-radius: 12px; text-align: left;">
                     <p style="font-size:11px; color:#666; font-weight:600;">মোট সদস্য: <span id="total-ref-count" style="color:#d32f2f; font-weight:700;">0</span> জন</p>
-                    <p style="font-size:11px; color:#666; font-weight:600; margin-top:3px;">মোট আয়: <span id="total-ref-earnings" style="color:#10b981; font-weight:700;">৳0.00</span></p>
+                    <p style="font-size:11px; color:#666; font-weight:600; margin-top:3px;">মোট আয়: <span id="total-ref-earnings" style="color:#10b981; font-weight:700;">৳0.00</span></p>
                 </div>
             </div>
             <p style="font-size:12px; margin-bottom:10px;">আপনার রেফারেল লিংক:</p>
@@ -562,7 +578,7 @@
         });
     }
 
-    // Dynamic Multi-Package Income View (Showing Level, Active Ads Counter & Timer)
+    // Package Income View with Level & Ad Counter
     function updatePackageIncomeView() {
         let box = document.getElementById('package-income-view');
         let pkgs = state.activePackages || [];
@@ -597,7 +613,7 @@
                         <h4 style="font-size:14px; font-weight:700; color:#222;"><i class="fas fa-crown" style="color:#f59e0b;"></i> ${pkg.name}</h4>
                         <span style="background:#10b981; color:white; padding:3px 8px; border-radius:10px; font-size:10px; font-weight:bold;">সক্রিয়</span>
                     </div>
-                    <p style="font-size:11px; color:#666; margin-top:5px;">প্রতি অ্যাড রেট: ৳${pkg.daily} | মোট দৈনিক কাজ: ${totalAds}টি</p>
+                    <p style="font-size:11px; color:#666; margin-top:5px;">প্রতি অ্যাড রেট: ৳${pkg.daily} | দৈনিক কাজ: ${totalAds}টি</p>
                     <div style="margin-top:10px; text-align:center;">${btnHtml}</div>
                 </div>
             `;
@@ -662,7 +678,7 @@
             days: days,
             time: new Date().toLocaleTimeString()
         }).then(() => {
-            alert('ভিআইপি প্যাকেজ ক্রয়ের রিকোয়েস্ট পেন্ডিংয়ে পাঠানো হয়েছে।');
+            alert('উপার্জিত ব্যালেন্স থেকে ডিপোজিট রিকোয়েস্ট পেন্ডিংয়ে পাঠানো হয়েছে।');
             loadVipPackages();
         });
     }
@@ -877,6 +893,7 @@
             document.getElementById('in-sub').innerText = inSub;
         });
 
+        // Deposit History
         db.ref('deposits').on('value', snapshot => {
             let deps = snapshot.val();
             let html = '';
@@ -901,6 +918,7 @@
             if(depHist) depHist.innerHTML = html || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো ডিপোজিট হিস্ট্রি নেই।</p>";
         });
 
+        // Withdraw History
         db.ref('withdraws').on('value', snapshot => {
             let list = snapshot.val();
             let html = '';
