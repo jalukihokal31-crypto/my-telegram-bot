@@ -82,6 +82,8 @@
     .rank-2 { background: #ef4444 !important; }
     .rank-3 { background: #f87171 !important; }
 
+    .red-badge { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; display: inline-block; }
+
     #ad-timer-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:none; flex-direction:column; justify-content:center; align-items:center; color:white; text-align:center; padding:20px; }
     .timer-circle { width: 100px; height: 100px; border: 5px solid #d32f2f; border-top: 5px solid white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: bold; margin-bottom: 20px; animation: spin 1s linear infinite; }
 
@@ -92,7 +94,7 @@
 </head>
 <body>
 
-<!-- 30 Seconds Timer Overlay for VIP & Watch Ads -->
+<!-- 30 Seconds Timer Overlay -->
 <div id="ad-timer-overlay">
     <div class="timer-circle" id="timer-number">30</div>
     <h3>বিজ্ঞাপন লোড হচ্ছে...</h3>
@@ -229,14 +231,14 @@
         </div>
     </div>
 
-    <!-- PACKAGE INCOME PAGE (VIP Ads & Expiry Countdown) -->
+    <!-- PACKAGE INCOME PAGE -->
     <div id="page-package-income" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>প্যাকেজ ইনকাম ও অ্যাক্টিভ ডিটেইলস</h4></div></div>
         <div style="padding:20px;">
             <div id="active-package-detailed-box" style="background: white; border: 1px solid #ffebee; border-radius: 14px; padding: 20px; text-align: center;">
                 <i class="fas fa-crown" style="font-size: 32px; color: #f59e0b; margin-bottom: 10px;"></i>
-                <h4 id="det-pkg-name" style="font-size: 15px; color: #222; font-weight: 700; margin-bottom: 5px;">কোনো প্যাকেজ কেনা নেই</h4>
-                <p id="det-pkg-desc" style="font-size: 12px; color: #666; margin-bottom: 15px;">আপনি এখনো কোনো ভিআইপি প্যাকেজ ক্রয় করেননি।</p>
+                <h4 id="det-pkg-name" style="font-size: 15px; color: #222; font-weight: 700; margin-bottom: 5px;">কোনো প্যাকেজ কেনা নেই বা পেন্ডিং আছে</h4>
+                <p id="det-pkg-desc" style="font-size: 12px; color: #666; margin-bottom: 15px;">আপনি প্যাকেজ কেনার পর অ্যাডমিন অ্যাপ্রুভ করলে এখানে শো করবে।</p>
                 <button class="submit-btn" onclick="switchPage('vip-packages')">প্যাকেজ কিনুন</button>
             </div>
         </div>
@@ -245,7 +247,7 @@
     <!-- MONTHLY SALARY PAGE -->
     <div id="page-monthly-salary" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>মাসিক স্যালারি ক্লেইম</h4></div></div>
-        <div style="padding:20px;">
+        <div style="padding:20px;" id="user-salary-claims-container">
             <div class="claim-box">
                 <div class="claim-info"><h4>৫ জন রেফার স্যালারি</h4><p>বোনাস: ৳৫০</p></div>
                 <button class="claim-btn" id="salary-btn-5" onclick="claimSalary(5, 50, 'salary5')">ক্লেম করুন</button>
@@ -268,7 +270,7 @@
     <!-- TARGET BONUS PAGE -->
     <div id="page-target-bonus" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>বড় টার্গেট বোনাস ক্লেইম</h4></div></div>
-        <div style="padding:20px;">
+        <div style="padding:20px;" id="user-target-claims-container">
             <div class="claim-box">
                 <div class="claim-info"><h4>১০০ জন রেফার টার্গেট</h4><p>বোনাস: ৳১,০০০</p></div>
                 <button class="claim-btn" id="target-btn-100" onclick="claimTarget(100, 1000, 'target100')">ক্লেম করুন</button>
@@ -284,7 +286,7 @@
         </div>
     </div>
 
-    <!-- DEPOSIT (With Gallery Screenshot Select) -->
+    <!-- DEPOSIT -->
     <div id="page-deposit" class="page">
         <div class="sub-header"><button class="back-btn" onclick="switchPage('home')"><i class="fas fa-arrow-left"></i></button><div class="sub-header-text"><h4>ডিপোজিট করুন</h4></div></div>
         <div class="form-area">
@@ -393,7 +395,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let state = { uid: '', userName: '', bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null };
+    let state = { uid: '', userName: '', bal: 0, ref: 0, adsCount: 0, claims: {}, activePackage: null, vipPending: false };
     let adInterval = null;
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -454,32 +456,19 @@
                 state.activePackage = val.activePackage || null;
             }
             updateUI();
-            checkClaimButtons();
             updatePackageIncomeView();
         });
 
-        db.ref('settings').on('value', snapshot => {
-            let s = snapshot.val();
-            if(s) {
-                if(s.gmail) {
-                    window.currentGmailRate = Number(s.gmail.rate) || 19;
-                    document.getElementById('g-rate').innerText = '৳' + window.currentGmailRate + '.00';
-                    document.getElementById('g-pass').innerText = s.gmail.pass || 'DRAGONPOROMAX';
-                }
-                if(s.facebook) {
-                    window.currentFbRate = Number(s.facebook.rate) || 4;
-                    document.getElementById('fb-rate').innerText = '৳' + window.currentFbRate + '.00';
-                    document.getElementById('fb-pass').innerText = s.facebook.pass || 'FBPASS2026';
-                }
-                if(s.insta) {
-                    window.currentInRate = Number(s.insta.rate) || 3;
-                    document.getElementById('in-rate').innerText = '৳' + window.currentInRate + '.00';
-                    document.getElementById('in-pass').innerText = s.insta.pass || 'INSTAPASS2026';
-                }
-                if(s.bkash) {
-                    document.getElementById('dep-bkash-num').innerText = s.bkash;
-                }
+        // পেন্ডিং ভিআইপি স্ট্যাটাস চেক
+        db.ref('vipPending').on('value', snapshot => {
+            let reqs = snapshot.val();
+            state.vipPending = false;
+            if (reqs) {
+                Object.keys(reqs).forEach(k => {
+                    if (reqs[k].uid === state.uid) state.vipPending = true;
+                });
             }
+            updatePackageIncomeView();
         });
 
         loadUserHistory();
@@ -501,7 +490,6 @@
         let pkg = state.activePackage;
 
         if (pkg) {
-            // মেয়াদ চেক করা (দিন হিসাব)
             let buyDate = new Date(pkg.buyDate || Date.now());
             let currentDate = new Date();
             let diffTime = Math.abs(currentDate - buyDate);
@@ -516,7 +504,7 @@
                 box.innerHTML = `
                     <i class="fas fa-exclamation-triangle" style="font-size: 32px; color: #ef4444; margin-bottom: 10px;"></i>
                     <h4 style="font-size: 15px; color: #222; font-weight: 700; margin-bottom: 5px;">আপনার ভিআইপি প্যাকেজ শেষ হয়ে গেছে!</h4>
-                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">${pkg.name} প্যাকেজের মেয়াদ শেষ হয়েছে। নতুন প্যাকেজ কিনুন।</p>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">নতুন প্যাকেজ কিনুন।</p>
                     <button class="submit-btn" onclick="switchPage('vip-packages')">প্যাকেজ কিনুন</button>
                 `;
                 return;
@@ -538,6 +526,12 @@
                     ${adButtonHtml}
                 </div>
             `;
+        } else if (state.vipPending) {
+            box.innerHTML = `
+                <i class="fas fa-clock" style="font-size: 32px; color: #d97706; margin-bottom: 10px;"></i>
+                <h4 style="font-size: 15px; color: #222; font-weight: 700; margin-bottom: 5px;">প্যাকেজ রিকোয়েস্ট পেন্ডিং আছে</h4>
+                <p style="font-size: 12px; color: #666; margin-bottom: 15px;">অ্যাডমিন অ্যাপ্রুভ করার জন্য অপেক্ষা করুন।</p>
+            `;
         } else {
             box.innerHTML = `
                 <i class="fas fa-crown" style="font-size: 32px; color: #ccc; margin-bottom: 10px;"></i>
@@ -548,14 +542,35 @@
         }
     }
 
-    // 30 Seconds Timer for VIP Package Ad
-    function startPackageAdTimer(dailyIncome) {
-        let todayStr = new Date().toDateString();
-        if (state.activePackage && state.activePackage.lastAdDate === todayStr) {
-            alert('আজকের অ্যাড দেখা কমপ্লিট, কালকে আবার আসবেন।');
+    function buyVipPackage(name, price, daily, days) {
+        if (state.bal < price) {
+            alert('পর্যাপ্ত ব্যালেন্স নেই! ডিপোজিট করুন।');
+            switchPage('deposit');
+            return;
+        }
+        if (state.vipPending) {
+            alert('আপনার একটি প্যাকেজ রিকোয়েস্ট ইতিমধ্যে পেন্ডিং আছে!');
             return;
         }
 
+        db.ref('vipPending').push({
+            uid: state.uid,
+            userName: state.userName,
+            packageName: name,
+            price: price,
+            daily: daily,
+            days: days,
+            time: new Date().toLocaleTimeString()
+        }).then(() => {
+            // ব্যালেন্স কেটে নেওয়া বা পেন্ডিং এ হোল্ড করা
+            db.ref('users/' + state.uid + '/bal').set(state.bal - price);
+            alert('ভিআইপি প্যাকেজ ক্রয়ের রিকোয়েস্ট পেন্ডিংয়ে পাঠানো হয়েছে। অ্যাডমিন অ্যাপ্রুভ করলে সক্রিয় হবে।');
+            switchPage('package-income');
+        });
+    }
+
+    function startPackageAdTimer(dailyIncome) {
+        let todayStr = new Date().toDateString();
         let overlay = document.getElementById('ad-timer-overlay');
         let timerNum = document.getElementById('timer-number');
         let timeLeft = 30;
@@ -588,12 +603,8 @@
         }, 1000);
     }
 
-    // 30 Seconds Timer for General Watch Ads
     function startGeneralAdTimer() {
-        if (state.adsCount >= 10) {
-            alert('আজকের জন্য আপনার অ্যাড দেখার লিমিট (১০টি) শেষ!');
-            return;
-        }
+        if (state.adsCount >= 10) { alert('আজকের জন্য আপনার অ্যাড দেখার লিমিট (১০টি) শেষ!'); return; }
 
         let overlay = document.getElementById('ad-timer-overlay');
         let timerNum = document.getElementById('timer-number');
@@ -612,7 +623,6 @@
             if (timeLeft <= 0) {
                 clearInterval(adInterval);
                 overlay.style.display = 'none';
-
                 let newCount = state.adsCount + 1;
                 let newBal = state.bal + 0.50;
                 db.ref('users/' + state.uid).update({ bal: newBal, adsCount: newCount }).then(() => {
@@ -622,64 +632,27 @@
         }, 1000);
     }
 
-    function checkClaimButtons() {
-        let salaries = [
-            { req: 5, id: 'salary-btn-5', key: 'salary5' },
-            { req: 10, id: 'salary-btn-10', key: 'salary10' },
-            { req: 15, id: 'salary-btn-15', key: 'salary15' },
-            { req: 20, id: 'salary-btn-20', key: 'salary20' }
-        ];
-        salaries.forEach(s => {
-            let btn = document.getElementById(s.id);
-            if (btn) {
-                if (state.claims[s.key]) {
-                    btn.innerText = 'ক্লেমড';
-                    btn.classList.add('disabled');
-                } else if (state.ref >= s.req) {
-                    btn.innerText = 'ক্লেম করুন';
-                    btn.classList.remove('disabled');
-                } else {
-                    btn.innerText = 'শর্ত পূরণ হয়নি';
-                    btn.classList.add('disabled');
-                }
+    function loadVipPackages() {
+        db.ref('vipPackages').on('value', snapshot => {
+            let pkgs = snapshot.val();
+            let html = '';
+            if (!pkgs) {
+                document.getElementById('vip-packages-container').innerHTML = "<p style='text-align:center; color:#666;'>কোনো ভিআইপি প্যাকেজ নেই।</p>";
+                return;
             }
-        });
-
-        let targets = [
-            { req: 100, id: 'target-btn-100', key: 'target100' },
-            { req: 200, id: 'target-btn-200', key: 'target200' },
-            { req: 300, id: 'target-btn-300', key: 'target300' }
-        ];
-        targets.forEach(t => {
-            let btn = document.getElementById(t.id);
-            if (btn) {
-                if (state.claims[t.key]) {
-                    btn.innerText = 'ক্লেমড';
-                    btn.classList.add('disabled');
-                } else if (state.ref >= t.req) {
-                    btn.innerText = 'ক্লেম করুন';
-                    btn.classList.remove('disabled');
-                } else {
-                    btn.innerText = 'শর্ত পূরণ হয়নি';
-                    btn.classList.add('disabled');
-                }
-            }
-        });
-    }
-
-    function claimSalary(reqRef, rewardAmt, key) {
-        if (state.claims[key]) { alert('এটি ইতিমধ্যে ক্লেম করা হয়েছে!'); return; }
-        if (state.ref < reqRef) { alert('আপনার পর্যাপ্ত রেফার নেই!'); return; }
-        db.ref('users/' + state.uid).update({ bal: state.bal + rewardAmt, [`claims/${key}`]: true }).then(() => {
-            alert('অভিনন্দন! সফলভাবে ৳' + rewardAmt + ' স্যালারি বোনাস ক্লেইম হয়েছে!');
-        });
-    }
-
-    function claimTarget(reqRef, rewardAmt, key) {
-        if (state.claims[key]) { alert('এটি ইতিমধ্যে ক্লেম করা হয়েছে!'); return; }
-        if (state.ref < reqRef) { alert('আপনার পর্যাপ্ত রেফার নেই!'); return; }
-        db.ref('users/' + state.uid).update({ bal: state.bal + rewardAmt, [`claims/${key}`]: true }).then(() => {
-            alert('অভিনন্দন! সফলভাবে ৳' + rewardAmt + ' টার্গেট বোনাস ক্লেইম হয়েছে!');
+            Object.keys(pkgs).forEach(key => {
+                let p = pkgs[key];
+                html += `
+                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid #ffebee; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4>${p.name}</h4>
+                            <p style="font-size:11px; color:#666;">মূল্য: ৳${p.price} | দৈনিক আয়: ৳${p.daily} | মেয়াদ: ${p.days || 1} দিন</p>
+                        </div>
+                        <button class="submit-btn" style="width:auto; padding:8px 15px;" onclick="buyVipPackage('${p.name}', ${p.price}, ${p.daily}, ${p.days || 1})">প্যাকেজ কিনুন</button>
+                    </div>
+                `;
+            });
+            document.getElementById('vip-packages-container').innerHTML = html;
         });
     }
 
@@ -798,67 +771,6 @@
             document.getElementById('gmail-sub').innerText = gSub;
             document.getElementById('fb-sub').innerText = fbSub;
             document.getElementById('in-sub').innerText = inSub;
-        });
-
-        db.ref('withdraws').on('value', snapshot => {
-            let list = snapshot.val();
-            let html = '';
-            if (list) {
-                Object.keys(list).forEach(key => {
-                    let w = list[key];
-                    if (w.uid === state.uid) {
-                        let statusClass = w.status === 'Paid' ? 'status-approved' : 'status-pending';
-                        html += `
-                            <div class="history-card">
-                                <div class="history-info">
-                                    <h4>${w.method} - ৳${w.amount}</h4>
-                                    <p>নম্বর: ${w.number}</p>
-                                </div>
-                                <div><span class="status-badge ${statusClass}">${w.status}</span></div>
-                            </div>
-                        `;
-                    }
-                });
-            }
-            document.getElementById('history-withdraw').innerHTML = html || "<p style='text-align:center; color:#666; font-size:11px;'>কোনো উইথড্র হিস্ট্রি নেই।</p>";
-        });
-    }
-
-    function loadVipPackages() {
-        db.ref('vipPackages').on('value', snapshot => {
-            let pkgs = snapshot.val();
-            let html = '';
-            if (!pkgs) {
-                document.getElementById('vip-packages-container').innerHTML = "<p style='text-align:center; color:#666;'>কোনো ভিআইপি প্যাকেজ নেই।</p>";
-                return;
-            }
-            Object.keys(pkgs).forEach(key => {
-                let p = pkgs[key];
-                html += `
-                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid #ffebee; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <h4>${p.name}</h4>
-                            <p style="font-size:11px; color:#666;">মূল্য: ৳${p.price} | দৈনিক আয়: ৳${p.daily} | মেয়াদ: ${p.days || 1} দিন</p>
-                        </div>
-                        <button class="submit-btn" style="width:auto; padding:8px 15px;" onclick="buyVipPackage('${p.name}', ${p.price}, ${p.daily}, ${p.days || 1})">প্যাকেজ কিনুন</button>
-                    </div>
-                `;
-            });
-            document.getElementById('vip-packages-container').innerHTML = html;
-        });
-    }
-
-    function buyVipPackage(name, price, daily, days) {
-        if (state.bal < price) {
-            alert('পর্যাপ্ত ব্যালেন্স নেই! ডিপোজিট করুন।');
-            switchPage('deposit');
-            return;
-        }
-        let newBal = state.bal - price;
-        let pkgData = { name: name, daily: daily, days: days, buyDate: new Date().toISOString(), lastAdDate: '' };
-        db.ref('users/' + state.uid).update({ bal: newBal, activePackage: pkgData }).then(() => {
-            alert('অভিনন্দন! সফলভাবে ' + name + ' প্যাকেজ কেনা হয়েছে।');
-            switchPage('package-income');
         });
     }
 
