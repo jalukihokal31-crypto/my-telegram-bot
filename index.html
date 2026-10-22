@@ -24,13 +24,12 @@
     .page.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Force Subscription / Verification Overlay Matching Screenshot */
+    /* Verification Overlay Styles */
     #verification-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fcf4f4; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; }
     .verify-icon-box { width: 75px; height: 75px; background: #ffebee; color: #d32f2f; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 34px; margin-bottom: 18px; box-shadow: 0 5px 15px rgba(211,47,47,0.1); }
-    .verify-title { color: #d32f2f; font-size: 20px; font-weight: 800; margin-bottom: 6px; letter-spacing: 0.5px; }
-    .verify-desc { font-size: 12px; color: #555; margin-bottom: 25px; line-height: 1.5; font-weight: 500; }
-    .verify-channel-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 320px; background: white; border: 1px solid #ffebee; padding: 14px 18px; border-radius: 16px; text-decoration: none; color: #222; font-weight: 700; font-size: 13px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: 0.2s; }
-    .verify-channel-btn:hover { background: #fff5f5; }
+    .verify-title { color: #d32f2f; font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .verify-desc { font-size: 12px; color: #555; margin-bottom: 25px; line-height: 1.5; }
+    .verify-channel-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 320px; background: white; border: 1px solid #ffebee; padding: 14px 18px; border-radius: 16px; text-decoration: none; color: #222; font-weight: 700; font-size: 13px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
     .verify-action-btn { width: 100%; max-width: 320px; background: #e91e63; color: white; border: none; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3); }
 
     .balance-card { background: linear-gradient(135deg, #d32f2f, #b71c1c); margin: 20px; border-radius: 20px; padding: 20px; color: white; box-shadow: 0 10px 20px rgba(211, 47, 47, 0.2); }
@@ -123,13 +122,13 @@
 </head>
 <body>
 
-<!-- EXACT MATCH SCREENSHOT VERIFICATION OVERLAY -->
-<div id="verification-overlay">
+<!-- Real-time Telegram Channel Verification Overlay -->
+<div id="verification-overlay" style="display:none;">
     <div class="verify-icon-box">
         <i class="fas fa-bullhorn"></i>
     </div>
     <h3 class="verify-title">TOUCH EARNING BD</h3>
-    <p class="verify-desc">চালিয়ে যেতে অবশ্যই আমাদের অফিসিয়াল চ্যানেলগুলোতে জয়েন করুন।</p>
+    <p class="verify-desc">চালিয়ে যেতে অবশ্যই আমাদের অফিসিয়াল চ্যানেল ও পেমেন্ট প্রুফ গ্রুপে জয়েন করুন।</p>
     
     <a href="https://t.me/TouchEarningBDOfficial" target="_blank" class="verify-channel-btn">
         <span style="display:flex; align-items:center; gap:10px;"><i class="fab fa-telegram" style="color:#0088cc; font-size:18px;"></i> Official Channel</span>
@@ -141,12 +140,11 @@
         <i class="fas fa-chevron-right" style="font-size:11px; color:#999;"></i>
     </a>
     
-    <button class="verify-action-btn" onclick="verifyAndEnterApp()">
+    <button class="verify-action-btn" onclick="verifySubscription()">
         VERIFY NOW
     </button>
 </div>
 
-<!-- Watch Ads Timer Overlay -->
 <div id="ad-timer-overlay">
     <div class="timer-circle" id="timer-number">30</div>
     <h3>বিজ্ঞাপন লোড হচ্ছে...</h3>
@@ -430,7 +428,7 @@
     let state = { uid: '', userName: '', bal: 0, ref: 0, adsCount: 0, claims: {}, activePackages: [], vipPendingList: [] };
     let adInterval = null;
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
         let tg = window.Telegram?.WebApp;
         let startParam = "";
         if (tg) {
@@ -445,6 +443,26 @@
         if (!state.uid) {
             state.uid = "TG_" + Math.floor(10000000 + Math.random() * 90000000);
             state.userName = "Telegram Member";
+        }
+
+        // Real-time Channel Verification Check via Render Server
+        let serverUrl = "https://my-bot-server-yqfq.onrender.com/check-subscription";
+        try {
+            let res = await fetch(serverUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: state.uid })
+            });
+            let data = await res.json();
+            
+            if (data.subscribed) {
+                document.getElementById('verification-overlay').style.display = 'none';
+            } else {
+                document.getElementById('verification-overlay').style.display = 'flex';
+            }
+        } catch (err) {
+            // Server error fallback
+            document.getElementById('verification-overlay').style.display = 'flex';
         }
 
         document.getElementById('user-name').innerText = state.userName;
@@ -504,9 +522,26 @@
         loadLeaderboard();
     });
 
-    // Verification button function to hide overlay and open app
-    function verifyAndEnterApp() {
-        document.getElementById('verification-overlay').style.display = 'none';
+    // Real-time verification button check
+    async function verifySubscription() {
+        let serverUrl = "https://my-bot-server-yqfq.onrender.com/check-subscription";
+        try {
+            let res = await fetch(serverUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId: state.uid })
+            });
+            let data = await res.json();
+
+            if (data.subscribed) {
+                document.getElementById('verification-overlay').style.display = 'none';
+                alert('ভেরিফিকেশন সফল হয়েছে!');
+            } else {
+                alert('⚠️ আপনি এখনও অফিসিয়াল চ্যানেল বা গ্রুপে জয়েন করেননি! দয়া করে জয়েন করুন।');
+            }
+        } catch (err) {
+            alert('সার্ভার চেক করতে সমস্যা হচ্ছে, আবার চেষ্টা করুন।');
+        }
     }
 
     function updateUI() {
@@ -794,7 +829,7 @@
         if (!number) { alert('নম্বর দিন!'); return; }
         if (state.bal < amount) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
         db.ref('withdraws').push({
-            uid: state.uid, userName: state.userName, method: method, amount: amount, number: number, status: 'Pending', time: new Date().toLocaleTimeString()
+            uid: state.uid, userName:state.userName, method: method, amount: amount, number: number, status: 'Pending', time: new Date().toLocaleTimeString()
         }).then(() => {
             db.ref('users/' + state.uid + '/bal').set(state.bal - amount);
             alert('উইথড্র রিকোয়েস্ট জমা হয়েছে!');
@@ -849,7 +884,7 @@
         db.ref('users').on('value', snapshot => {
             let users = [];
             snapshot.forEach(child => { users.push(child.val()); });
-            users.sort((a, b) => (b.ref || 0) - (a.ref || 0));
+            users.sort((a, b) => (b.ref || 0) - (a.ref ||0));
             document.getElementById('total-member-count').innerText = users.length;
             let html = '';
             users.forEach((u, i) => {
@@ -869,11 +904,12 @@
                     </div>
                 `;
             });
-            document.getElementById('leaderboard-list').innerHTML = html || "<p style='text-align:center;'>মেম্বার নেই।</p>";
+            document.getElementById('leaderboard-list').innerHTML = html || "<p style='text-align:center;'>মেম্বার নেই।</i>";
         });
     }
 
     function switchPage(p) {
+        document.querySelectorAll('.page').forceStyle?.remove?.(); // Safe fallback
         document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
         document.getElementById('page-' + p).classList.add('active');
         window.scrollTo(0, 0);
