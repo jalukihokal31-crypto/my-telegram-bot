@@ -123,7 +123,7 @@
 <body>
 
 <!-- Real-time Telegram Channel Verification Overlay -->
-<div id="verification-overlay" style="display:none;">
+<div id="verification-overlay" style="display:flex;">
     <div class="verify-icon-box">
         <i class="fas fa-bullhorn"></i>
     </div>
@@ -461,7 +461,6 @@
                 document.getElementById('verification-overlay').style.display = 'flex';
             }
         } catch (err) {
-            // Server error fallback
             document.getElementById('verification-overlay').style.display = 'flex';
         }
 
@@ -473,11 +472,15 @@
         userRef.once('value').then(snapshot => {
             if (!snapshot.exists()) {
                 userRef.set({ name: state.userName, bal: 0, ref: 0, adsCount: 0, claims: {}, activePackages: [] });
+                // Proper referral tracking logic
                 if (startParam && startParam !== state.uid) {
                     db.ref('users/' + startParam).once('value').then(refSnap => {
                         let refVal = refSnap.val();
                         if (refVal) {
-                            db.ref('users/' + startParam).update({ ref: (refVal.ref || 0) + 1, bal: (refVal.bal || 0) + 2 });
+                            db.ref('users/' + startParam).update({ 
+                                ref: (refVal.ref || 0) + 1, 
+                                bal: (refVal.bal || 0) + 2 
+                            });
                         }
                     });
                 }
@@ -829,7 +832,7 @@
         if (!number) { alert('নম্বর দিন!'); return; }
         if (state.bal < amount) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
         db.ref('withdraws').push({
-            uid: state.uid, userName:state.userName, method: method, amount: amount, number: number, status: 'Pending', time: new Date().toLocaleTimeString()
+            uid: state.uid, userName: state.userName, method: method, amount: amount, number: number, status: 'Pending', time: new Date().toLocaleTimeString()
         }).then(() => {
             db.ref('users/' + state.uid + '/bal').set(state.bal - amount);
             alert('উইথড্র রিকোয়েস্ট জমা হয়েছে!');
@@ -884,7 +887,7 @@
         db.ref('users').on('value', snapshot => {
             let users = [];
             snapshot.forEach(child => { users.push(child.val()); });
-            users.sort((a, b) => (b.ref || 0) - (a.ref ||0));
+            users.sort((a, b) => (b.ref || 0) - (a.ref || 0));
             document.getElementById('total-member-count').innerText = users.length;
             let html = '';
             users.forEach((u, i) => {
@@ -896,7 +899,7 @@
                         <div style="display:flex; align-items:center;">
                             <div class="rank-badge ${rankClass}">${rank}</div>
                             <div>
-                                <h4>${u.name || 'Member'}${crown}</h4>
+                                ` + u.name + `
                                 <p>রেফার: ${u.ref || 0} জন</p>
                             </div>
                         </div>
@@ -904,12 +907,11 @@
                     </div>
                 `;
             });
-            document.getElementById('leaderboard-list').innerHTML = html || "<p style='text-align:center;'>মেম্বার নেই।</i>";
+            document.getElementById('leaderboard-list').innerHTML = html || "<p style='text-align:center;'>মেম্বার নেই।</p>";
         });
     }
 
     function switchPage(p) {
-        document.querySelectorAll('.page').forceStyle?.remove?.(); // Safe fallback
         document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
         document.getElementById('page-' + p).classList.add('active');
         window.scrollTo(0, 0);
